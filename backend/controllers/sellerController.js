@@ -1,5 +1,5 @@
-const Seller = require('./models/Seller');
-const generateToken = require('../utils/generateToken');
+const Seller = require('../models/seller');
+const generateToken = require('../utils/generateTokes');
 
 exports.registerSeller = async (req, res) => {
   const { name, email, phone, password, businessName, address } = req.body;
