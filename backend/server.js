@@ -23,6 +23,7 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 // Routes
+console.log("hello");
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
@@ -33,7 +34,7 @@ app.get('/', (req, res) => {
 });
 
 // Server listen
-const PORT = process.env.PORT || 5537;
+const PORT =  8989;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

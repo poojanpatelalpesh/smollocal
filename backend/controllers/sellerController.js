@@ -1,7 +1,8 @@
 const Seller = require('../models/seller');
-const generateToken = require('../utils/generateTokes');
+const generateToken = require('../utils/generateTokes.js');
 
 exports.registerSeller = async (req, res) => {
+  console.log("i am hidden here");
   const { name, email, phone, password, businessName, address } = req.body;
 
   try {
