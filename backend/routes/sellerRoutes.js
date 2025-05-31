@@ -4,7 +4,7 @@ const {
   registerSeller,
   loginSeller,
   getSellerProfile,
-} = require('../controllers/sellerController');
+} = require('../controllers/sellerController.js');
 const { protect } = require('../middleware/authMiddleware');
 
 console.log("error here");

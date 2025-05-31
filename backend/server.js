@@ -8,9 +8,12 @@ const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config();
 
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
@@ -23,10 +26,11 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 // Routes
-console.log("hello");
+// console.log("hello");
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+
 
 // Health Check
 app.get('/', (req, res) => {
@@ -34,7 +38,7 @@ app.get('/', (req, res) => {
 });
 
 // Server listen
-const PORT =  8989;
+const PORT =  7890;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
