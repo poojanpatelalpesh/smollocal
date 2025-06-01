@@ -1,4 +1,4 @@
-const Seller = require('../models/seller');
+const Seller = require('../models/Seller');
 const generateToken = require('../utils/generateTokes.js');
 
 exports.registerSeller = async (req, res) => {
