@@ -1,11 +1,14 @@
 const Product = require('../models/Products');
 
 exports.createProduct = async (req, res) => {
-  const { name, description, price, category } = req.body;
+  const { name, description, price, category, imageUrl } = req.body;
 
   try {
-    const imageUrl = req.file?.path || ''; // path is the Cloudinary URL
-    if (!imageUrl) return res.status(400).json({ message: 'Image upload failed' });
+    const finalImageUrl = req.file?.path || imageUrl || '';
+
+    if (!finalImageUrl) {
+      return res.status(400).json({ message: 'Image upload failed' });
+    }
 
     const product = await Product.create({
       seller: req.seller._id,
@@ -13,7 +16,7 @@ exports.createProduct = async (req, res) => {
       description,
       price,
       category,
-      imageUrl
+      imageUrl: finalImageUrl,
     });
 
     res.status(201).json(product);
@@ -21,7 +24,6 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ message: 'Failed to add product', error });
   }
 };
-
 
 exports.getMyProducts = async (req, res) => {
   try {
