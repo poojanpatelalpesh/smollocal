@@ -3,7 +3,10 @@ const Product = require('../models/Products');
 const Seller = require('../models/seller');
 
 exports.placeOrder = async (req, res) => {
-  const { sellerBusinessName, products, customer } = req.body;
+  const { sellerBusinessName, products } = req.body;
+  const customerId = req.customer; // Already from middleware
+
+  if (!customerId) return res.status(401).json({ message: 'Unauthorized, login first' });
 
   try {
     if (!sellerBusinessName) {
@@ -23,7 +26,7 @@ exports.placeOrder = async (req, res) => {
       seller: seller._id,
       sellerName: seller.businessName,
       products,
-      customer,
+      customer: customerId, // This is an ObjectId
       status: 'pending',
     });
 
@@ -34,4 +37,3 @@ exports.placeOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to place order' });
   }
 };
-
