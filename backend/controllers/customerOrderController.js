@@ -1,6 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Products');
-const Seller = require('../models/seller');
+const Seller = require('../models/Seller');
 
 exports.placeOrder = async (req, res) => {
   const { sellerBusinessName, products } = req.body;
