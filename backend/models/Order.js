@@ -13,14 +13,13 @@ const orderSchema = new mongoose.Schema({
     }
   ],
   customer: {
-    name: String,
-    email: String,
-    phone: String,
-    address: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer',
+    required: true,
   },
   status: {
     type: String,
-    enum: ['pending', 'approved', 'denied'],
+    enum: ['pending', 'approved', 'denied','paid'],
     default: 'pending'
   },
   denialReason: {
