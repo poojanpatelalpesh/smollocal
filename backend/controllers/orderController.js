@@ -53,30 +53,30 @@ exports.updateOrderStatus = async (req, res) => {
 const Seller = require('../models/seller');
 
 exports.placeOrder = async (req, res) => {
-  console.log('placeOrder hit with body:', req.body);
-  console.log('Request body:', req.body);
-  try {
-    const { sellerBusinessName, products, customer } = req.body;
+  const { sellerBusinessName, products } = req.body;
+  const customerId = req.customer; // from auth middleware
 
-    if (!sellerBusinessName || typeof sellerBusinessName !== 'string') {
-      return res.status(400).json({ message: 'sellerBusinessName is required and must be a string' });
-    }
-    if (!products || !Array.isArray(products) || products.length === 0) {
-      return res.status(400).json({ message: 'Products array is required and cannot be empty' });
-    }
-    if (!customer || typeof customer !== 'object') {
-      return res.status(400).json({ message: 'Customer details are required' });
+  if (!customerId) return res.status(401).json({ message: 'Unauthorized, login first' });
+
+  try {
+    if (!sellerBusinessName) {
+      return res.status(400).json({ message: 'sellerBusinessName is required' });
     }
 
     const seller = await Seller.findOne({ businessName: sellerBusinessName.toLowerCase() });
-    if (!seller) {
-      return res.status(404).json({ message: 'Seller not found' });
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+    // Validate products belong to seller
+    const productIds = products.map(p => p.productId);
+    const sellerProducts = await Product.find({ _id: { $in: productIds }, seller: seller._id });
+    if (sellerProducts.length !== products.length) {
+      return res.status(400).json({ message: 'One or more products not found for this seller' });
     }
 
     const order = new Order({
       seller: seller._id,
       products,
-      customer,
+      customer: customerId,
       status: 'pending',
     });
 
@@ -88,4 +88,5 @@ exports.placeOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to place order' });
   }
 };
+
 
