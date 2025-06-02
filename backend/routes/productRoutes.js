@@ -1,13 +1,24 @@
 const express = require('express');
-const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
-const { createProduct, getMyProducts } = require('../controllers/productController');
 const multer = require('multer');
-const { storage } = require('../utils/cloudinary');
+const { 
+  createProduct, 
+  getAllProducts, 
+  getProductById, 
+  updateProduct, 
+  deleteProduct 
+} = require('../controllers/productController');
+const { protect } = require('../middleware/authMiddleware'); // use your existing protect middleware
 
-const upload = multer({ storage });
+const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
 
-router.post('/', protect, upload.single('image'), createProduct);
-router.get('/', protect, getMyProducts);
+router.route('/')
+  .post(protect, upload.single('image'), createProduct)
+  .get(protect, getAllProducts);
+
+router.route('/:id')
+  .get(protect, getProductById)
+  .put(protect, upload.single('image'), updateProduct)
+  .delete(protect, deleteProduct);
 
 module.exports = router;

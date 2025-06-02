@@ -50,7 +50,7 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-const Seller = require('../models/seller');
+const Seller = require('../models/Seller');
 
 exports.placeOrder = async (req, res) => {
   console.log('placeOrder hit with body:', req.body);

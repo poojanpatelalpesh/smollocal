@@ -7,7 +7,7 @@ const {
 } = require('../controllers/sellerController.js');
 const { protect } = require('../middleware/authMiddleware');
 
-console.log("error here");
+// console.log("error here");
 
 router.post('/register', registerSeller);
 router.post('/login', loginSeller);
