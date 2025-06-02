@@ -8,6 +8,7 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 
 console.log("error here");
+router.get('/test', (req, res) => res.send('Seller route is live!'));
 
 router.post('/register', registerSeller);
 router.post('/login', loginSeller);
