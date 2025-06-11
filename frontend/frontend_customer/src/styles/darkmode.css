@@ -1,0 +1,56 @@
+/* Dark mode styles
+.app.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.app.dark .header {
+  background-color: #1f2937;
+}
+
+.app.dark .about-section {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: #e0e0e0;
+}
+
+.app.dark .company-name {
+  color: #93c5fd;
+}
+
+.app.dark .about-title {
+  color: #bfdbfe;
+}
+
+.app.dark .about-text,
+.app.dark .company-description {
+  color: #e0e0e0;
+}
+
+.dark-mode-toggle {
+  background: transparent;
+  border: 2px solid #6b7280;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.app.dark .dark-mode-toggle {
+  border-color: #93c5fd;
+  color: #93c5fd;
+}
+
+.app.dark .dark-mode-toggle:hover {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+} */

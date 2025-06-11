@@ -1,0 +1,346 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  color: #333;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+/* Header */
+.dashboard-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Main Content */
+.dashboard-main {
+  flex: 1;
+  padding: 40px;
+  background-color: #ffffff;
+}
+
+/* Grid Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+/* First Row Container */
+.first-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+
+/* Second Row Container */
+.second-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+}
+
+/* Card Base Styles */
+.card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 35px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+}
+
+/* Business Card */
+.business-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 25px;
+  min-height: 150px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.business-icon {
+  width: 80px;
+  height: 80px;
+  background: #ff1493;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  flex-shrink: 0;
+}
+
+.business-info {
+  flex: 1;
+}
+
+.business-info h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.business-info p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #00c851;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #00c851;
+  border-radius: 50%;
+}
+
+/* Action Cards */
+.action-card {
+  position: relative;
+  justify-content: space-between;
+  text-align: center;
+  border: 2px solid #f0f0f0;
+}
+
+.card-icon {
+  width: 70px;
+  height: 70px;
+  background: #ff1493;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 25px;
+}
+
+.notification-icon {
+  background: #6c757d;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-content h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.card-content p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.add-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  background: #ff1493;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Orders Card - Now Taking 2fr Width */
+.orders-card {
+  width: 100%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 2px solid #dee2e6;
+  min-height: 220px;
+}
+
+.orders-content {
+  width: 100%;
+}
+
+.orders-number {
+  font-size: 100px;
+  font-weight: 700;
+  color: #ff1493;
+  margin-bottom: 15px;
+  line-height: 1;
+}
+
+.orders-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.orders-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.orders-subtitle {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+  }
+  
+  .first-row {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .second-row {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .business-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .orders-card {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 20px;
+  }
+  
+  .dashboard-header {
+    padding: 15px 20px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .first-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .second-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .business-card {
+    min-height: auto;
+  }
+  
+  .business-info h2 {
+    font-size: 28px;
+  }
+  
+  .orders-number {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-main {
+    padding: 15px;
+  }
+  
+  .card {
+    padding: 20px;
+    min-height: 160px;
+  }
+  
+  .business-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+/* Hover Effects */
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+
+.add-button:hover {
+  background: #e60073;
+  cursor: pointer;
+}
+
+.card-icon:hover,
+.business-icon:hover {
+  background: #e60073;
+  cursor: pointer;
+}
+
+.orders-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}

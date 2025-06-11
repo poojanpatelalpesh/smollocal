@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #3B82F6;
+  --accept-color: #10B981;
+  --cancel-color: #EF4444;
+  --text-primary: #1F2937;
+  --text-secondary: #4B5563;
+  --bg-light: #F9FAFB;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-light);
+}
+
+/* Custom animation classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Order card styles */
+.order-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Button styles */
+.btn-accept {
+  background-color: var(--accept-color);
+}
+
+.btn-accept:hover {
+  background-color: #059669;
+}
+
+.btn-cancel {
+  background-color: var(--cancel-color);
+}
+
+.btn-cancel:hover {
+  background-color: #DC2626;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #2563EB;
+}

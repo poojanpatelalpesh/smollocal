@@ -1,0 +1,116 @@
+.category-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+}
+
+.category-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+}
+
+.category-card-content {
+  padding: 1.5rem;
+}
+
+.category-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.category-card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.category-card-icon {
+  padding: 0.5rem;
+  background-color: #dbeafe;
+  border-radius: 0.5rem;
+}
+
+.category-card-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #2563eb;
+}
+
+.category-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.category-card-count {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.category-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.category-card-action-btn {
+  padding: 0.5rem;
+  color: #9ca3af;
+  border: none;
+  background: none;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.category-card-action-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.category-card-action-btn.edit:hover {
+  color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.category-card-action-btn.delete:hover {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.category-card-action-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.category-card-description {
+  color: #4b5563;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.category-card-manage-btn {
+  width: 100%;
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.category-card-manage-btn:hover {
+  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  transform: translateY(-1px);
+}
