@@ -1,4 +1,5 @@
 const Product = require('../models/Products');
+const Category = require('../models/Category'); // ✅ Added
 const fs = require('fs');
 const { uploadImage, deleteImage } = require('../utils/cloudinary');
 
@@ -6,6 +7,12 @@ exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
     const sellerId = req.seller._id;
+
+    // ✅ Ensure category belongs to the seller
+    const categoryExists = await Category.findOne({ _id: category, seller: sellerId });
+    if (!categoryExists) {
+      return res.status(400).json({ message: 'Invalid category' });
+    }
 
     const result = await uploadImage(req.file.path);
     fs.unlinkSync(req.file.path); // remove local file after upload
@@ -52,6 +59,15 @@ exports.updateProduct = async (req, res) => {
 
     if (!product) return res.status(404).json({ error: 'Product not found' });
 
+    // ✅ Ensure updated category also belongs to the seller
+    if (category) {
+      const categoryExists = await Category.findOne({ _id: category, seller: req.seller._id });
+      if (!categoryExists) {
+        return res.status(400).json({ message: 'Invalid category' });
+      }
+      product.category = category;
+    }
+
     if (req.file) {
       // remove old image
       const publicId = product.imageUrl.split('/').pop().split('.')[0];
@@ -65,7 +81,6 @@ exports.updateProduct = async (req, res) => {
     product.name = name || product.name;
     product.description = description || product.description;
     product.price = price || product.price;
-    product.category = category || product.category;
 
     await product.save();
     res.json(product);

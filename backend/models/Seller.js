@@ -40,6 +40,13 @@ const sellerSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  slug: {
+    type: String,
+    unique: true,
+    required: true,
+    lowercase: true,
+    trim: true
+  }
 }, { timestamps: true });
 
 sellerSchema.pre('save', async function (next) {
