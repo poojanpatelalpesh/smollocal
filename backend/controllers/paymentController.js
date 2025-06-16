@@ -1,6 +1,6 @@
 const Order = require('../models/Order');
 const Transaction = require('../models/Transaction');
-const Seller = require('../models/Seller'); // import seller model
+const Seller = require('../models/seller'); // import seller model
 
 exports.makePayment = async (req, res) => {
   const { orderId } = req.params;

@@ -1,5 +1,5 @@
 const QRCode = require('qrcode');
-const Seller = require('../models/Seller');
+const Seller = require('../models/seller');
 
 exports.generateQR = async (req, res) => {
   try {

@@ -1,4 +1,4 @@
-const Seller = require('../models/Seller');
+const Seller = require('../models/seller');
 const generateToken = require('../utils/generateTokes.js');
 const slugify = require('slugify');
 
