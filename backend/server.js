@@ -16,10 +16,6 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const qrRoutes = require('./routes/qrRoutes');
 
 
-
-
-
-
 const app = express();
 
 // 2. Setup middleware before routes
