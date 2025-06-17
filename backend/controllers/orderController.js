@@ -50,7 +50,7 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-const Seller = require('../models/Seller');
+const Seller = require('../models/seller');
 
 exports.placeOrder = async (req, res) => {
   const { sellerBusinessName, products } = req.body;

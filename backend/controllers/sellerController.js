@@ -1,27 +1,43 @@
-const Seller = require('../models/Seller');
+const Seller = require('../models/seller');
 const generateToken = require('../utils/generateTokes.js');
+const slugify = require('slugify');
 
 exports.registerSeller = async (req, res) => {
-  console.log("i am hidden here");
   const { name, email, phone, password, businessName, address } = req.body;
 
   try {
-    // Check if email or phone or business name is already taken
+    // Step 1: Create slug
+    const baseSlug = slugify(businessName, { lower: true, strict: true });
+    let slug = baseSlug;
+    let suffix = 1;
+
+    // Step 2: Ensure uniqueness of slug
+    while (await Seller.findOne({ slug })) {
+      slug = `${baseSlug}-${suffix++}`;
+    }
+
+    // Step 3: Check for existing seller by email/phone/business name
     const existingSeller = await Seller.findOne({
-      $or: [{ email }, { phone }, { businessName: businessName.toLowerCase() }]
+      $or: [
+        { email }, 
+        { phone }, 
+        { businessName: businessName.toLowerCase() }
+      ]
     });
 
     if (existingSeller) {
       return res.status(400).json({ message: 'Seller already exists with provided credentials' });
     }
 
+    // Step 4: Create seller with slug
     const seller = await Seller.create({
       name,
       email,
       phone,
       password,
       businessName,
-      address
+      address,
+      slug
     });
 
     res.status(201).json({
@@ -31,6 +47,7 @@ exports.registerSeller = async (req, res) => {
       phone: seller.phone,
       businessName: seller.businessName,
       address: seller.address,
+      slug: seller.slug,
       token: generateToken(seller._id)
     });
   } catch (err) {
@@ -38,6 +55,7 @@ exports.registerSeller = async (req, res) => {
     res.status(500).json({ message: 'Server error. Could not register seller.' });
   }
 };
+
 
 exports.loginSeller = async (req, res) => {
   const { email, password } = req.body;
