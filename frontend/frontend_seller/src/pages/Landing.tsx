@@ -1,8 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Landing.css';
+// Import your logo - make sure the path is correct
+import OurLogo from '../assets/Our-Logo.png'; // Rename your file to remove spaces
 
 const Landing: React.FC = () => {
+  // Fallback image URL or you can use your imported logo
+  const logoSrc = OurLogo; // Update this path to match your actual image location
+  
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    target.style.display = 'none';
+    const fallback = target.nextElementSibling as HTMLElement;
+    if (fallback) {
+      fallback.style.display = 'flex';
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -11,24 +25,34 @@ const Landing: React.FC = () => {
 
       <main className="dashboard-main">
         <div className="dashboard-grid">
-          {/* ---- First Row (4 cards) ---- */}
+          {/* First Row (4 cards) */}
           <div className="first-row">
             {/* Business Info Card */}
             <div className="card business-card">
-              <div className="business-icon">
-                <span>🏪</span>
-              </div>
               <div className="business-info">
-                <h2>XYZ BAKERY</h2>
-                <p>Business Dashboard</p>
+                
+                  {/* Main image */}
+                  <img 
+                    src={logoSrc} 
+                    alt="Business logo" 
+                    className="main-image"
+                    onError={handleImageError}
+                  />
+                  {/* Fallback icon */}
+                  {/* <div className="fallback-icon">
+                    <span>🏪</span>
+                  </div> */}
+                
+                <h4>XYZ BAKERY</h4>
                 <div className="status-indicator">
                   <span className="status-dot"></span>
+                  <span>ONLINE</span>
                 </div>
               </div>
             </div>
 
             {/* Add Category Card */}
-            <Link to='./ProductMangementPage'>
+            <Link to="./ProductMangementPage" className="card-link">
               <div className="card action-card">
                 <div className="card-icon">
                   <span>📦</span>
@@ -37,12 +61,11 @@ const Landing: React.FC = () => {
                   <h3>ADD CATEGORY</h3>
                   <p>Manage product categories</p>
                 </div>
-                <div className="add-button">+</div>
               </div>
             </Link>
 
             {/* Add Customer Card */}
-            <Link to='./CustomerPage'>
+            <Link to="./CustomerPage" className="card-link">
               <div className="card action-card">
                 <div className="card-icon">
                   <span>👤</span>
@@ -51,12 +74,11 @@ const Landing: React.FC = () => {
                   <h3>ADD CUSTOMER</h3>
                   <p>Expand your customer base</p>
                 </div>
-                <div className="add-button">+</div>
               </div>
             </Link>
 
             {/* Store Link / QR Card */}
-            <Link to='./QR'>
+            <Link to="./QR" className="card-link">
               <div className="card action-card">
                 <div className="card-icon">
                   <span>🔗</span>
@@ -65,15 +87,14 @@ const Landing: React.FC = () => {
                   <h3>STORE LINK/QR</h3>
                   <p>Share your store</p>
                 </div>
-                <div className="add-button">+</div>
               </div>
             </Link>
           </div>
 
-          {/* ---- Second Row (3 cards with orders taking 2fr width) ---- */}
+          {/* Second Row (3 cards with orders taking 2fr width) */}
           <div className="second-row">
             {/* Orders Card (wider - takes 2fr) */}
-            <Link to='./Dashboard'>
+            <Link to="./Dashboard" className="card-link">
               <div className="card orders-card">
                 <div className="orders-content">
                   <div className="orders-number">24</div>
@@ -85,7 +106,7 @@ const Landing: React.FC = () => {
             </Link>
 
             {/* Previous Orders Card (takes 1fr) */}
-            <Link to='./order-history'>
+            <Link to="./order-history" className="card-link">
               <div className="card action-card">
                 <div className="card-icon">
                   <span>🕒</span>
@@ -94,12 +115,11 @@ const Landing: React.FC = () => {
                   <h3>PREVIOUS ORDERS</h3>
                   <p>View order history</p>
                 </div>
-                <div className="add-button">+</div>
               </div>
             </Link>
 
             {/* Notify Customers Card (takes 1fr) */}
-            <Link to='./MessageAll'>
+            <Link to="./MessageAll" className="card-link">
               <div className="card action-card">
                 <div className="card-icon notification-icon">
                   <span>🔔</span>
@@ -108,7 +128,6 @@ const Landing: React.FC = () => {
                   <h3>NOTIFY CUSTOMERS</h3>
                   <p>Send updates & promotions</p>
                 </div>
-                <div className="add-button">+</div>
               </div>
             </Link>
           </div>

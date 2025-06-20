@@ -12,9 +12,27 @@ html, body {
   color: #333;
 }
 
+/* Remove default link styling */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:visited {
+  color: inherit;
+}
+
+a:hover {
+  color: inherit;
+}
+
+a:active {
+  color: inherit;
+}
+
 /* Dashboard Container */
 .dashboard-container {
-  min-height: 100vh;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
@@ -69,8 +87,7 @@ html, body {
 
 /* Card Base Styles */
 .card {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: rgb(7, 171, 106);
   border-radius: 12px;
   padding: 35px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -85,13 +102,13 @@ html, body {
   align-items: center;
   gap: 25px;
   min-height: 150px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background: white
 }
 
 .business-icon {
   width: 80px;
   height: 80px;
-  background: #ff1493;
+  background: white;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -100,9 +117,31 @@ html, body {
   flex-shrink: 0;
 }
 
-.business-info {
-  flex: 1;
+/* .image-wrapper {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+.main-image {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  transition: transform 0.3s ease;
 }
+
+/* .main-image:hover {
+  transform: scale(1.05);
+} */
 
 .business-info h2 {
   font-size: 32px;
@@ -112,9 +151,12 @@ html, body {
 }
 
 .business-info p {
-  font-size: 16px;
-  color: #666;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
   margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .status-indicator {
@@ -138,13 +180,12 @@ html, body {
   position: relative;
   justify-content: space-between;
   text-align: center;
-  border: 2px solid #f0f0f0;
 }
 
 .card-icon {
   width: 70px;
   height: 70px;
-  background: #ff1493;
+  background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -154,7 +195,7 @@ html, body {
 }
 
 .notification-icon {
-  background: #6c757d;
+  background:white;
 }
 
 .card-content {
@@ -164,36 +205,20 @@ html, body {
 .card-content h3 {
   font-size: 22px;
   font-weight: 600;
-  color: #333;
   margin-bottom: 12px;
+  color: black !important;
 }
 
 .card-content p {
   font-size: 16px;
-  color: #666;
+  color: black;
   line-height: 1.5;
-}
-
-.add-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 30px;
-  height: 30px;
-  background: #ff1493;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
 }
 
 /* Orders Card - Now Taking 2fr Width */
 .orders-card {
   width: 100%;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background:  rgb(7, 171, 106);;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -208,14 +233,14 @@ html, body {
 .orders-number {
   font-size: 100px;
   font-weight: 700;
-  color: #ff1493;
+  color: black;
   margin-bottom: 15px;
   line-height: 1;
 }
 
 .orders-label {
   font-size: 12px;
-  color: #666;
+  color: black;
   font-weight: 600;
   letter-spacing: 2px;
   margin-bottom: 16px;
@@ -224,13 +249,13 @@ html, body {
 .orders-title {
   font-size: 32px;
   font-weight: 700;
-  color: #333;
+  color: black;
   margin-bottom: 12px;
 }
 
 .orders-subtitle {
   font-size: 16px;
-  color: #666;
+  color: black;;
 }
 
 /* Responsive Design */
@@ -252,6 +277,21 @@ html, body {
     flex-direction: column;
     text-align: center;
     gap: 15px;
+    padding: 25px;
+  }
+  
+  .business-info {
+    align-items: center;
+  }
+  
+  .image-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .business-info p {
+    font-size: 16px;
   }
   
   .orders-card {
@@ -287,6 +327,17 @@ html, body {
   
   .business-card {
     min-height: auto;
+    padding: 20px;
+  }
+  
+  .image-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 8px;
+  }
+  
+  .business-info p {
+    font-size: 14px;
   }
   
   .business-info h2 {
@@ -334,10 +385,10 @@ html, body {
 }
 
 .card-icon:hover,
-.business-icon:hover {
-  background: #e60073;
+/* .business-icon:hover {
+  background: white;
   cursor: pointer;
-}
+} */
 
 .orders-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);

@@ -1,0 +1,474 @@
+/* Main Container */
+.main-container {
+  height: 200%;
+}
+h3{
+  color: #70a32f !important;
+}
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 170%;
+  background: #b0c4bb;
+  padding-top: 55px;
+  padding-bottom: 35px;
+  padding-left: 50px;
+  padding-right: 50px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+/* What We Do Section - 30% */
+.what-we-do-section {
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: #e5ede8;
+  padding: 30px;
+}
+
+.what-we-do-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #003e29;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.what-we-do-description {
+  font-size: 18px;
+  color: #003e29;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Top Half - 50% (kept original) */
+.top-half {
+  flex: 0 0 50%;
+  display: flex;
+  gap: 20px;
+}
+
+/* Bottom Half - 50% (kept original) */
+.bottom-half {
+  flex: 0 0 50%;
+  display: flex;
+  gap: 20px;
+}
+
+/* Card Container Base */
+.card-container {
+  background: #003e29;
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Card Heights */
+.register-card{
+    flex: 1.5;
+    color: white;
+    min-height: 320px;
+}
+.products-card {
+  flex: 1.5;
+  height: 100%;
+  min-height: 320px;
+}
+
+.empty-card{
+    flex: 1;
+    min-height: 280px;
+}
+.whatsapp-card {
+  flex: 1;
+  height: 100%;
+  min-height: 280px;
+}
+
+/* Card Content */
+.card-content {
+    color: white;
+  flex: 1;
+  z-index: 2;
+}
+
+.card-title {
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.card-description {
+  color: #70a32f !important;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 280px;
+  font-weight: 400;
+}
+
+/* Image Wrappers and Images */
+.image-wrapper-top-left {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 280px;
+  height: 230px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.top-left-image {
+  width: 260px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.image-wrapper-top-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  height: 230px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.top-right-image {
+  width: 240px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.image-wrapper-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  height: 210px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.bottom-right-image {
+  width: 240px;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Card Illustrations */
+.card-illustration {
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Laptop Icon for Register Card */
+.laptop-icon {
+  position: relative;
+}
+
+.laptop-screen {
+  width: 80px;
+  height: 50px;
+  background: #2d7a4d;
+  border-radius: 5px 5px 0 0;
+  border: 2px solid #4a9068;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.laptop-base {
+  width: 90px;
+  height: 8px;
+  background: #4a9068;
+  border-radius: 0 0 10px 10px;
+  margin-top: -2px;
+}
+
+.grid-pattern {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 3px;
+  width: 60px;
+  height: 30px;
+}
+
+.grid-item {
+  background: #90c695;
+  border-radius: 2px;
+}
+
+.cloud-icon {
+  position: absolute;
+  top: -15px;
+  right: -10px;
+}
+
+.cloud-shape {
+  width: 30px;
+  height: 20px;
+  background: #90c695;
+  border-radius: 20px;
+  position: relative;
+}
+
+.cloud-shape::before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #90c695;
+  border-radius: 50%;
+  top: -8px;
+  left: 5px;
+}
+
+.cloud-shape::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 15px;
+  background: #90c695;
+  border-radius: 50%;
+  top: -5px;
+  right: 2px;
+}
+
+/* Person with Board for Products Card */
+.person-with-board {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.person {
+  position: relative;
+}
+
+.person-head {
+  width: 20px;
+  height: 20px;
+  background: #90c695;
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+
+.person-body {
+  width: 25px;
+  height: 30px;
+  background: #90c695;
+  border-radius: 10px;
+}
+
+.person-arm {
+  position: absolute;
+  width: 15px;
+  height: 4px;
+  background: #90c695;
+  border-radius: 2px;
+  top: 25px;
+  right: -5px;
+  transform: rotate(-30deg);
+}
+
+.presentation-board {
+  width: 40px;
+  height: 50px;
+  background: #4a9068;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.board-item {
+  width: 25px;
+  height: 8px;
+  background: #90c695;
+  border-radius: 2px;
+}
+
+/* Messaging Scene for WhatsApp Card */
+.messaging-scene {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.person-messaging {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.person-messaging .person-head {
+  width: 18px;
+  height: 18px;
+  background: #90c695;
+  border-radius: 50%;
+  margin-bottom: 3px;
+}
+
+.person-messaging .person-body {
+  width: 20px;
+  height: 25px;
+  background: #90c695;
+  border-radius: 8px;
+}
+
+.laptop-messaging {
+  position: relative;
+}
+
+.laptop-screen-msg {
+  width: 50px;
+  height: 30px;
+  background: #2d7a4d;
+  border-radius: 3px 3px 0 0;
+  border: 2px solid #4a9068;
+}
+
+.laptop-base-msg {
+  width: 55px;
+  height: 5px;
+  background: #4a9068;
+  border-radius: 0 0 8px 8px;
+  margin-top: -2px;
+}
+
+.message-bubbles {
+  position: absolute;
+  top: -10px;
+  right: -15px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.message-bubble {
+  width: 15px;
+  height: 8px;
+  background: #90c695;
+  border-radius: 10px;
+}
+
+/* Chart Icon for Empty Card */
+.chart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: end;
+  gap: 4px;
+  height: 50px;
+}
+
+.bar {
+  width: 8px;
+  background: #90c695;
+  border-radius: 2px 2px 0 0;
+}
+
+.bar-1 {
+  height: 30px;
+}
+
+.bar-2 {
+  height: 45px;
+}
+
+.bar-3 {
+  height: 35px;
+}
+
+.bar-4 {
+  height: 25px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .overview-container {
+    height: auto;
+  }
+  
+  .what-we-do-section {
+    flex: none;
+    min-height: 200px;
+  }
+  
+  .what-we-do-title {
+    font-size: 32px;
+  }
+  
+  .what-we-do-description {
+    font-size: 16px;
+  }
+  
+  .top-half,
+  .bottom-half {
+    flex-direction: column;
+  }
+  
+  .card-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .card-content {
+    order: 2;
+  }
+  
+  .card-illustration,
+  .image-wrapper-top-left,
+  .image-wrapper-top-right,
+  .image-wrapper-bottom-right {
+    position: relative;
+    order: 1;
+    flex: none;
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .top-left-image,
+  .top-right-image,
+  .bottom-right-image {
+    width: 120px;
+    height: auto;
+    position: relative;
+  }
+}
