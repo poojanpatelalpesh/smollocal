@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import './QR.css';
 
 interface QRProps {
@@ -62,11 +64,17 @@ const QR: React.FC<QRProps> = ({
       console.error('Error copying to clipboard:', error);
     }
   };
+   const navigate = useNavigate();
+  
 
   return (
     <div className="qr-container">
       <div className="qr-header">
-        <h1 className="qr-title">QR CODE DASHBOARD</h1>
+        <div className="qr-title">
+          <button className="back-button" onClick={() => navigate('/Landing')}>
+        <ArrowLeft size={30} />
+        </button>
+        </div>
       </div>
 
       <div className="qr-content">

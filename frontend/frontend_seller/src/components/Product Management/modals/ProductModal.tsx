@@ -22,7 +22,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     name: '',
     description: '',
     image: '',
-    price: 0,
+    price: '',
   });
   const [preview, setPreview] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +41,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         name: '',
         description: '',
         image: '',
-        price: 0,
+        price: '',
       });
       setPreview('');
     }
@@ -62,10 +62,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name.trim()) {
-      onSubmit(formData);
-      onClose();
+
+    const { name, description, image, price } = formData;
+    if (!name.trim() || !description.trim() || !image.trim() || !price.trim()) {
+      alert('Please fill in all fields.');
+      return;
     }
+
+    onSubmit(formData);
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -82,7 +87,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         <form onSubmit={handleSubmit} className="product-modal-form">
           <div className="product-modal-field">
-            <label className="product-modal-label">Product Image</label>
+            <label className="product-modal-label">Product Image *</label>
             <div
               onClick={() => fileInputRef.current?.click()}
               className={`product-modal-upload-area ${preview ? 'has-image' : ''}`}
@@ -135,11 +140,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               Price *
             </label>
             <input
-              type="number"
+              type="text"
               id="price"
               value={formData.price}
               onChange={(e) =>
-                setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })
+                setFormData({ ...formData, price: e.target.value })
               }
               className="product-modal-input"
               placeholder="Enter product price"
@@ -149,16 +154,23 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
           <div className="product-modal-field">
             <label htmlFor="description" className="product-modal-label">
-              Description
+              Description * (Max 200 characters)
             </label>
             <textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value.slice(0, 200) })
+              }
               rows={4}
+              maxLength={200}
               className="product-modal-textarea"
               placeholder="Enter product description"
+              required
             />
+            {/* <div className="product-modal-char-count">
+              {formData.description.length} / 200
+            </div> */}
           </div>
 
           <div className="product-modal-actions">

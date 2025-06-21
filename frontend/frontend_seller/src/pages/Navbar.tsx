@@ -1,6 +1,6 @@
 // src/components/Navbar.tsx
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation , useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link 
-          to="/" 
+          to="/Landing" 
           className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
         >
           Dashboard

@@ -4,15 +4,27 @@
   font-family: 'Arial', sans-serif;
 }
 
+/* Header styling to control layout */
 .header {
-    display: flex;
-  padding: 1.5rem 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Small gap between arrow and title */
+  padding: 1rem 2rem; /* Add some padding around the header */
+}
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
 }
 
 .dashboard-title {
-    display: flex;
-   align-items: center;
+  gap: 15px;
+  display: flex;
+  align-items: center;
   color: black;
   font-size: 2rem;
   font-weight: bold;
@@ -21,27 +33,36 @@
 }
 
 .main-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 2rem;
-  padding: 2rem;
+  padding: 3rem 2rem; /* Increased top/bottom padding from 2rem */
   max-width: 1400px;
-  margin: 0 auto;
+  margin: auto;
+  width: 100%;
+  align-items: flex-start;
+  min-height: calc(100vh - 180px); /* Adjusted for increased padding */
 }
 
-/* Form Section */
+/* Form Section - Fixed width and position */
 .form-section {
+  width: 500px;
+  flex-shrink: 0;
   background: white;
-  max-height: 500px;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 400px; /* Fixed static height */
+  position: sticky;
+  top: 3rem; /* Adjusted for new padding */
 }
 
 .form-header {
-  background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+  background: #065f46;
   padding: 1.5rem;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .form-header h2 {
@@ -53,9 +74,12 @@
 }
 
 .customer-form {
-  overflow-y: auto;
-  flex-grow: 1;
   padding: 2rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
 .form-group {
@@ -88,15 +112,19 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   background: #f9fafb;
+  box-sizing: border-box;
 }
 
-.form-input,
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
 .form-textarea {
   resize: vertical;
   min-height: 80px;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  box-sizing: border-box;
 }
 
 .form-buttons {
@@ -121,6 +149,8 @@
 
 .btn-primary:hover {
   transform: translateY(-2px);
+  color: white;
+  background-color: #065f46;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
@@ -143,21 +173,25 @@
   transform: translateY(-2px);
 }
 
-/* Customers Section */
+/* Customers Section - Flexible width */
 .customers-section {
+  flex: 1;
   background: white;
   border-radius: 12px;
-  max-height: 500px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  height: 400px; /* Fixed static height */
 }
 
 .customers-header {
-  background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+  background: #065f46;
   padding: 1.5rem;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .customers-header h2 {
@@ -166,18 +200,13 @@
   font-weight: bold;
   letter-spacing: 0.05em;
   margin: 0;
-}
-
-.customer-count {
-  color: #bfdbfe;
-  font-size: 0.875rem;
-  font-weight: 500;
+  text-align: center;
 }
 
 .customers-list {
   padding: 1.5rem;
-  max-height: 600px;
   overflow-y: auto;
+  flex-grow: 1;
 }
 
 .customer-card {
@@ -196,6 +225,10 @@
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.customer-card:last-child {
+  margin-bottom: 0;
 }
 
 .customer-info {
@@ -243,22 +276,24 @@
 }
 
 .edit-btn {
-  background: #3b82f6;
-  color: white;
+  background: white;
+  color: black;
 }
 
 .edit-btn:hover {
-  background: #2563eb;
+  background: #065f46;
+  color: white;
   transform: scale(1.1);
 }
 
 .delete-btn {
-  background: #ef4444;
-  color: white;
+  background: white;
+  color: black;
 }
 
 .delete-btn:hover {
   background: #dc2626;
+  color: white;
   transform: scale(1.1);
 }
 
@@ -266,6 +301,11 @@
   text-align: center;
   padding: 3rem 2rem;
   color: #6b7280;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .empty-icon {
@@ -286,16 +326,39 @@
   color: #9ca3af;
 }
 
+/* Remove bottom containers as they're not needed with flexbox */
+.bottom-container-1,
+.bottom-container-2 {
+  display: contents;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .main-content {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 1.5rem;
-    padding: 1.5rem;
+    padding: 2rem 1.5rem; /* Adjusted padding for tablet */
+    min-height: auto;
   }
   
   .dashboard-title {
     font-size: 1.5rem;
+  }
+  
+  .form-section,
+  .customers-section {
+    width: 100%;
+    height: 500px; /* Fixed height for responsive view */
+    min-height: auto;
+    position: static;
+  }
+  
+  .form-section {
+    flex-shrink: 1;
+  }
+  
+  .customer-form {
+    justify-content: flex-start;
   }
 }
 
@@ -305,7 +368,7 @@
   }
   
   .main-content {
-    padding: 1rem;
+    padding: 1.5rem 1rem; /* Reduced padding for mobile */
   }
   
   .customer-form {

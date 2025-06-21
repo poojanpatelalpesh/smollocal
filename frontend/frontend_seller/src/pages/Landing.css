@@ -202,15 +202,19 @@ a:active {
   flex: 1;
 }
 
-.card-content h3 {
+/* .card-content h3 {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: black !important;
-}
+  color: black;
+} */
 
+.card-content{
+  font-size: 22px;
+  color: white;
+}
 .card-content p {
-  font-size: 16px;
+  font-size: 18px;
   color: black;
   line-height: 1.5;
 }
@@ -218,7 +222,7 @@ a:active {
 /* Orders Card - Now Taking 2fr Width */
 .orders-card {
   width: 100%;
-  background:  rgb(7, 171, 106);;
+  background:  rgb(7, 171, 106);
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -249,7 +253,7 @@ a:active {
 .orders-title {
   font-size: 32px;
   font-weight: 700;
-  color: black;
+  color:white ;
   margin-bottom: 12px;
 }
 

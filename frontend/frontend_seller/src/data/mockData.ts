@@ -1,8 +1,9 @@
 import { Order } from '../types/models';
+import { v4 as uuidv4} from 'uuid';
 
 export const mockOrders: Order[] = [
   {
-    id: 'ord-001-28734',
+    uuid: uuidv4(),
     products: [
       { id: 'p1', name: 'Wireless Headphones', quantity: 1, price: 99.99 },
       { id: 'p2', name: 'Phone Case', quantity: 2, price: 19.99 }
@@ -17,7 +18,7 @@ export const mockOrders: Order[] = [
     createdAt: new Date('2023-06-15T10:30:00')
   },
   {
-    id: 'ord-002-39485',
+    uuid: uuidv4(),
     products: [
       { id: 'p3', name: 'Smart Watch', quantity: 1, price: 249.99 }
     ],
@@ -31,7 +32,7 @@ export const mockOrders: Order[] = [
     createdAt: new Date('2023-06-14T15:45:00')
   },
   {
-    id: 'ord-003-57291',
+    uuid: uuidv4(),
     products: [
       { id: 'p4', name: 'Bluetooth Speaker', quantity: 1, price: 79.99 },
       { id: 'p5', name: 'USB-C Cable', quantity: 3, price: 12.99 },
@@ -47,7 +48,7 @@ export const mockOrders: Order[] = [
     createdAt: new Date('2023-06-13T09:15:00')
   },
   {
-    id: 'ord-004-68123',
+    uuid: uuidv4(),
     products: [
       { id: 'p7', name: 'Laptop Sleeve', quantity: 1, price: 29.99 },
       { id: 'p8', name: 'Wireless Mouse', quantity: 1, price: 39.99 }
@@ -62,7 +63,7 @@ export const mockOrders: Order[] = [
     createdAt: new Date('2023-06-12T14:20:00')
   },
   {
-    id: 'ord-005-74629',
+    uuid: uuidv4(),
     products: [
       { id: 'p9', name: 'External SSD 1TB', quantity: 1, price: 149.99 }
     ],

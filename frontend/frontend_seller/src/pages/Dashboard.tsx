@@ -7,7 +7,6 @@ import './Dashboard.css';
 const Dashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     // Simulating API call
@@ -17,51 +16,27 @@ const Dashboard: React.FC = () => {
     }, 1000);
   }, []);
 
-  const handleAcceptOrder = (id: string) => {
-    setOrders(orders.map(order => 
-      order.id === id ? { ...order, status: 'Accepted' } : order
+  const handleAcceptOrder = (uuid: string) => {
+    setOrders(orders.map(order =>
+      order.uuid === uuid ? { ...order, status: 'Accepted' } : order
     ));
   };
 
-  const handleCancelOrder = (id: string) => {
-    setOrders(orders.map(order => 
-      order.id === id ? { ...order, status: 'Canceled' } : order
+  const handleCancelOrder = (uuid: string) => {
+    setOrders(orders.map(order =>
+      order.uuid === uuid ? { ...order, status: 'Canceled' } : order
     ));
   };
 
-  const handleSendMessage = (id: string, message: string) => {
-    console.log(`Message sent to order ${id}: ${message}`);
-    // In a real app, you would send this to an API
+  const handleSendMessage = (uuid: string, message: string) => {
+    console.log(`Message sent to order ${uuid}: ${message}`);
+    alert("Message sent to customer successfully!!");
   };
-
-  const filteredOrders = filter === 'all' 
-    ? orders 
-    : orders.filter(order => order.status.toLowerCase() === filter);
 
   return (
     <div className="dashboard">
       <div className="dashboard-header">
         <h1>Orders Dashboard</h1>
-        <div className="filter-controls">
-          <button 
-            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => setFilter('all')}
-          >
-            All
-          </button>
-          <button 
-            className={`filter-btn ${filter === 'accepted' ? 'active' : ''}`}
-            onClick={() => setFilter('accepted')}
-          >
-            Accepted
-          </button>
-          <button 
-            className={`filter-btn ${filter === 'canceled' ? 'active' : ''}`}
-            onClick={() => setFilter('canceled')}
-          >
-            Canceled
-          </button>
-        </div>
       </div>
 
       {loading ? (
@@ -70,7 +45,7 @@ const Dashboard: React.FC = () => {
         </div>
       ) : (
         <OrderList 
-          orders={filteredOrders}
+          orders={orders}
           onAcceptOrder={handleAcceptOrder}
           onCancelOrder={handleCancelOrder}
           onSendMessage={handleSendMessage}

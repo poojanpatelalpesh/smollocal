@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Edit, Trash2, User, Phone } from 'lucide-react';
+import { Edit, Trash2, User, Phone, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './CustomerPage.css';
 
 interface Customer {
@@ -9,17 +10,14 @@ interface Customer {
 }
 
 const CustomerPage: React.FC = () => {
-  const [customers, setCustomers] = useState<Customer[]>([
-    { id: 1, name: 'John Doe', phone: '1234567890' },
-    { id: 2, name: 'Jane Smith', phone: '0987654321' },
-  ]);
-
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [formData, setFormData] = useState({
     name: '',
-    phone: ''
+    phone: '',
   });
-
   const [editingId, setEditingId] = useState<number | null>(null);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -89,7 +87,12 @@ const CustomerPage: React.FC = () => {
   return (
     <div className="customer-page">
       <div className="header">
-        <h1 className="dashboard-title">Customer details</h1>
+        <h1 className="dashboard-title">
+        <button className="back-button" onClick={() => navigate('/Landing')}>
+        <ArrowLeft size={30} />
+        </button>
+        Customer details
+        </h1>
       </div>
 
       <div className="main-content">
@@ -135,7 +138,6 @@ const CustomerPage: React.FC = () => {
                 required
               />
             </div>
-
             <div className="form-buttons">
               <button type="submit" className="btn-primary">
                 {editingId ? 'UPDATE' : 'ADD'}
@@ -152,7 +154,6 @@ const CustomerPage: React.FC = () => {
         <div className="customers-section">
           <div className="customers-header">
             <h2>YOUR CUSTOMERS</h2>
-            <span className="customer-count">({customers.length} customers)</span>
           </div>
 
           <div className="customers-list">

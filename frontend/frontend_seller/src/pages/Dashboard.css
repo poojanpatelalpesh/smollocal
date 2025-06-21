@@ -1,6 +1,17 @@
 .dashboard {
+  background-color: white;
   padding: 1rem 0;
 }
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
 
 .dashboard-header {
   display: flex;

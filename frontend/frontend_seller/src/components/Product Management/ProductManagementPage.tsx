@@ -13,6 +13,7 @@ export const ProductManagementPage: React.FC = () => {
       products={products}
       onUpdateCategories={setCategories}
       onUpdateProducts={setProducts}
+      onBack={() => (null)}
     />
   );
 };

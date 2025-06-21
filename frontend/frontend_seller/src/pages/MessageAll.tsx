@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './MessageAll.css';
 
 interface MessageAllProps {
@@ -7,6 +9,7 @@ interface MessageAllProps {
 
 const MessageAll: React.FC<MessageAllProps> = ({ totalCustomers = 0 }) => {
   const [message, setMessage] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
@@ -32,11 +35,12 @@ const MessageAll: React.FC<MessageAllProps> = ({ totalCustomers = 0 }) => {
     <div className="message-all-container">
       <div className="message-all-header">
         <div className="header-content">
-          <h1>MESSAGE ALL CUSTOMERS</h1>
-        </div>
-        <div className="customer-count">
-          <span className="count-number">{totalCustomers.toLocaleString()}</span>
-          <span className="count-label">Total Customers</span>
+          <div className="header-with-back">
+            <button className="back-button" onClick={() => navigate('/Landing')}>
+              <ArrowLeft size={30} />
+            </button>
+            <h1>MESSAGE ALL CUSTOMERS</h1>
+          </div>
         </div>
       </div>
 

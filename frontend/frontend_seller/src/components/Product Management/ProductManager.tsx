@@ -74,7 +74,6 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
             </button>
             <div>
               <h1>{category.name}</h1>
-              <p>{category.description}</p>
             </div>
           </div>
           <button
@@ -89,11 +88,11 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
         {products.length === 0 ? (
           <div className="product-manager-empty">
             <div className="product-manager-empty-card">
-              <div className="product-manager-empty-icon">
+              {/* <div className="product-manager-empty-icon">
                 <Plus />
-              </div>
-              <h3>No Products Yet</h3>
-              <p>Add your first product to this category</p>
+              </div> */}
+              <h2>No Products Yet</h2>
+              <p>Add your first product to this category to start your</p>
               <button
                 onClick={openCreateModal}
                 className="product-manager-empty-btn"

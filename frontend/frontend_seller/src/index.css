@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --primary-color: #3B82F6;
   --accept-color: #10B981;
   --cancel-color: #EF4444;
   --text-primary: #1F2937;
   --text-secondary: #4B5563;
   --bg-light: #F9FAFB;
-}
+} */
 
 body {
   font-family: 'Inter', sans-serif;

@@ -27,8 +27,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
               <Package />
             </div>
             <div>
-              <h3 className="category-card-title">{category.name}</h3>
-              <p className="category-card-count">{productCount} products</p>
+              <h2 className="category-card-title">{category.name}</h2>
+              <p className="category-card-count">{productCount} Products</p>
             </div>
           </div>
           <div className="category-card-actions">
@@ -55,13 +55,12 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           </div>
         </div>
         
-        <p className="category-card-description">{category.description}</p>
         
         <button
           onClick={() => onSelect(category)}
           className="category-card-manage-btn"
         >
-          Manage Products
+          <h4>Manage Products</h4>
         </button>
       </div>
     </div>

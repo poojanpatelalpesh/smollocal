@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import OrderList from '../components/OrderList';
 import { Order } from '../types/models';
 import { mockOrders } from '../data/mockData';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './OrderHistory.css';
 
 const OrderHistory: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulating API call
@@ -38,6 +41,9 @@ const OrderHistory: React.FC = () => {
   return (
     <div className="order-history">
       <div className="history-header">
+        <button className="back-button" onClick={() => navigate('/Landing')}>
+                <ArrowLeft size={30} />
+                </button>
         <h1>Order History</h1>
         <div className="search-box">
           <input

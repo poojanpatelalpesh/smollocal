@@ -14,7 +14,7 @@ export interface Customer {
 }
 
 export interface Order {
-  id: string;
+  uuid: string; // ✅ Unique identifier for React key, actions, etc.
   products: Product[];
   customer: Customer;
   status: 'Pending' | 'Accepted' | 'Canceled';

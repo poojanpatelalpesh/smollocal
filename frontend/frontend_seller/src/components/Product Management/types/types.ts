@@ -14,7 +14,7 @@ export interface Product {
   image: string;
   createdAt: Date;
   updatedAt: Date;
-  price: number;
+  price: string;
 }
 
 export interface CategoryFormData {
@@ -26,5 +26,5 @@ export interface ProductFormData {
   name: string;
   description: string;
   image: string;
-  price: number;
+  price: string;
 }

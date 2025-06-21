@@ -99,7 +99,7 @@
 .category-modal-input:focus {
   outline: none;
   border-color: transparent;
-  box-shadow: 0 0 0 2px #3b82f6;
+  box-shadow: 0 0 0 2px #065f46;
 }
 
 /*
@@ -141,14 +141,15 @@
 }
 
 .category-modal-cancel-btn:hover {
-  background-color: #e5e7eb;
+  background-color: red;
+  color: white;
 }
 
 .category-modal-submit-btn {
   flex: 1;
   padding: 0.5rem 1rem;
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
-  color: white;
+  background: #f3f4f6;
+  color: black;
   border: none;
   border-radius: 0.5rem;
   font-weight: 500;
@@ -157,7 +158,8 @@
 }
 
 .category-modal-submit-btn:hover {
-  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  background: #065f46;
+  color: white;
 }
 
 /* === UPDATED STYLES FOR CATEGORY CARD GRID === */

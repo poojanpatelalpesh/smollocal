@@ -67,7 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className="product-card-content">
         <div className="product-card-header">
-          <h3 className="product-card-title">{product.name}</h3>
+          <p className="product-card-title">{product.name}</p>
           <p className="product-card-price">₹{product.price}</p>
         </div>
 

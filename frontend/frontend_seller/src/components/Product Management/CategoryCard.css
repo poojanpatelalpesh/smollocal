@@ -1,5 +1,5 @@
 .category-card {
-  background: white;
+  background: rgb(7, 171, 106) !important;
   border-radius: 0.75rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -31,20 +31,20 @@
 
 .category-card-icon {
   padding: 0.5rem;
-  background-color: #dbeafe;
+  background-color: white;
   border-radius: 0.5rem;
 }
 
 .category-card-icon svg {
   width: 1.5rem;
   height: 1.5rem;
-  color: #2563eb;
+  color: black;
 }
 
-.category-card-title {
+.category-card-title h2{
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: black ;
   margin: 0;
 }
 
@@ -61,7 +61,7 @@
 
 .category-card-action-btn {
   padding: 0.5rem;
-  color: #9ca3af;
+  color: black;
   border: none;
   background: none;
   border-radius: 0.5rem;
@@ -89,7 +89,7 @@
 }
 
 .category-card-description {
-  color: #4b5563;
+  color: black;
   margin-bottom: 1rem;
   display: -webkit-box;
   line-clamp: 2;
@@ -100,8 +100,8 @@
 
 .category-card-manage-btn {
   width: 100%;
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
-  color: white;
+  background: white;
+  color: black;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.5rem;
@@ -111,6 +111,6 @@
 }
 
 .category-card-manage-btn:hover {
-  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  background: white;
   transform: translateY(-1px);
 }

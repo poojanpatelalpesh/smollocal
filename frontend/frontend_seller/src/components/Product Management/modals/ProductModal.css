@@ -98,7 +98,7 @@
 }
 
 .product-modal-upload-area:hover {
-  border-color: #3b82f6;
+  border-color:  #065f46;
 }
 
 .product-modal-upload-area.has-image:hover .product-modal-upload-overlay {
@@ -173,7 +173,7 @@
 .product-modal-input:focus {
   outline: none;
   border-color: transparent;
-  box-shadow: 0 0 0 2px #3b82f6;
+  box-shadow: 0 0 0 2px  #065f46;
 }
 
 .product-modal-textarea {
@@ -191,7 +191,7 @@
 .product-modal-textarea:focus {
   outline: none;
   border-color: transparent;
-  box-shadow: 0 0 0 2px #3b82f6;
+  box-shadow: 0 0 0 2px  #065f46;
 }
 
 .product-modal-actions {
@@ -219,8 +219,8 @@
 .product-modal-submit-btn {
   flex: 1;
   padding: 0.5rem 1rem;
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
-  color: white;
+  background:  #f3f4f6;
+  color: black;
   border: none;
   border-radius: 0.5rem;
   font-weight: 500;
@@ -229,7 +229,8 @@
 }
 
 .product-modal-submit-btn:hover {
-  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  background: #065f46;
+  color: white;
 }
 
 .product-modal-description-preview p {

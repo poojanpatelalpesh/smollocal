@@ -41,7 +41,7 @@
   padding-right: 1rem;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid #065f46;
   border-radius: 0.75rem;
   background-color: #f9fafb;
   transition: all 0.2s;
@@ -49,8 +49,8 @@
 
 .login-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  border-color: #065f46;
+  box-shadow:#065f46;
   background-color: #ffffff;
 }
 
@@ -70,13 +70,13 @@
 }
 
 .login-link {
-  color: #2563eb;
+  color: #065f46;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .login-link:hover {
-  color: #1d4ed8;
+  color: rgb(7, 171, 106);
   text-decoration: underline;
 }

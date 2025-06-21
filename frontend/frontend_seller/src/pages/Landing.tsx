@@ -58,7 +58,7 @@ const Landing: React.FC = () => {
                   <span>📦</span>
                 </div>
                 <div className="card-content">
-                  <h3>ADD CATEGORY</h3>
+                  <b>ADD CATEGORY</b>
                   <p>Manage product categories</p>
                 </div>
               </div>
@@ -71,7 +71,7 @@ const Landing: React.FC = () => {
                   <span>👤</span>
                 </div>
                 <div className="card-content">
-                  <h3>ADD CUSTOMER</h3>
+                  <b>ADD CUSTOMER</b>
                   <p>Expand your customer base</p>
                 </div>
               </div>
@@ -84,7 +84,7 @@ const Landing: React.FC = () => {
                   <span>🔗</span>
                 </div>
                 <div className="card-content">
-                  <h3>STORE LINK/QR</h3>
+                  <b>STORE LINK/QR</b>
                   <p>Share your store</p>
                 </div>
               </div>
@@ -98,7 +98,6 @@ const Landing: React.FC = () => {
               <div className="card orders-card">
                 <div className="orders-content">
                   <div className="orders-number">24</div>
-                  <div className="orders-label">ACTIVE</div>
                   <div className="orders-title">ORDERS</div>
                   <div className="orders-subtitle">Manage all your orders</div>
                 </div>
@@ -112,7 +111,7 @@ const Landing: React.FC = () => {
                   <span>🕒</span>
                 </div>
                 <div className="card-content">
-                  <h3>PREVIOUS ORDERS</h3>
+                  <b>PREVIOUS ORDERS</b>
                   <p>View order history</p>
                 </div>
               </div>
@@ -125,7 +124,7 @@ const Landing: React.FC = () => {
                   <span>🔔</span>
                 </div>
                 <div className="card-content">
-                  <h3>NOTIFY CUSTOMERS</h3>
+                  <b>NOTIFY CUSTOMERS</b>
                   <p>Send updates & promotions</p>
                 </div>
               </div>

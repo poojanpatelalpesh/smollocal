@@ -93,10 +93,10 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
         {categories.length === 0 ? (
           <div className="category-manager-empty">
             <div className="category-manager-empty-card">
-              <div className="category-manager-empty-icon">
+              {/* <div className="category-manager-empty-icon">
                 <Plus />
-              </div>
-              <h3>No Categories Yet</h3>
+              </div> */}
+              <h2>No Categories Yet</h2>
               <p>Create your first category to start organizing your products</p>
               <button
                 onClick={openCreateModal}

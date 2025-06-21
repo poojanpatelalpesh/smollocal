@@ -1,6 +1,8 @@
 .category-manager {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /* .category-manager-container {
@@ -13,7 +15,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-top: 10px;
   margin-bottom: 2rem;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .category-manager-title-section h1 {
@@ -32,8 +37,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
-  color: white;
+  background: white;
+  color: black;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 0.75rem;
@@ -44,7 +49,8 @@
 }
 
 .category-manager-add-btn:hover {
-  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  color: white;
+  background: #065f46;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
@@ -66,12 +72,25 @@
   padding: 3rem;
   max-width: 28rem;
   margin: 0 auto;
+
+  /* Add vertical spacing */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Adjust this value as needed */
+  align-items: center;
+  text-align: center;
+}
+
+
+.category-manager-empty-card h2{
+  color: black;
+  font-weight: 800;
 }
 
 .category-manager-empty-icon {
   width: 4rem;
   height: 4rem;
-  background-color: #dbeafe;
+  background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -82,23 +101,17 @@
 .category-manager-empty-icon svg {
   width: 2rem;
   height: 2rem;
-  color: #2563eb;
+  color: Black;
 }
 
-.category-manager-empty h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 0.5rem 0;
-}
 
-.category-manager-empty p {
+.category-manager-empty {
   color: #4b5563;
   margin: 0 0 1.5rem 0;
 }
 
 .category-manager-empty-btn {
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  background-color: rgb(7, 171, 106);
   color: white;
   padding: 0.5rem 1.5rem;
   border: none;
@@ -109,7 +122,7 @@
 }
 
 .category-manager-empty-btn:hover {
-  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  background: #065f46;
 }
 
 .category-manager-grid {
