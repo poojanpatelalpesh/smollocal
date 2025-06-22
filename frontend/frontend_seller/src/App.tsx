@@ -38,82 +38,82 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 function AppRoutes() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<FirstPage />} />
-        <Route path="/Price" element={<Price />} />
-        
-        {/* Auth Routes */}
-        <Route path="/Login" element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        } />
-        <Route path="/Signup" element={
-          <PublicRoute>
-            <SignupPage />
-          </PublicRoute>
-        } />
-        
-        {/* Protected Routes */}
-        <Route path="/Landing" element={
-          <ProtectedRoute>
-            <Layout>
-              <Landing />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        <Route path="/Dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/order-history" element={
-          <ProtectedRoute>
-            <Layout>
-              <OrderHistory />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        <Route path="/CustomerPage" element={
-          <ProtectedRoute>
-            <Layout>
-              <CustomerPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        <Route path="/QR" element={
-          <ProtectedRoute>
-            <Layout>
-              <QR />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        <Route path="/MessageAll" element={
-          <ProtectedRoute>
-            <Layout>
-              <MessageAll totalCustomers={1000} />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        <Route path="/ProductMangementPage" element={
-          <ProtectedRoute>
-            <Layout>
-              <ProductManagementPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </Router>
+    <Routes>
+      {/* Public Routes - No Auth Required */}
+      <Route path="/" element={<FirstPage />} />
+      <Route path="/Price" element={<Price />} />
+      
+      {/* Auth Routes */}
+      <Route path="/Login" element={
+        <PublicRoute>
+          <LoginPage />
+        </PublicRoute>
+      } />
+      <Route path="/Signup" element={
+        <PublicRoute>
+          <SignupPage />
+        </PublicRoute>
+      } />
+      
+      {/* Protected Routes */}
+      <Route path="/Landing" element={
+        <ProtectedRoute>
+          <Layout>
+            <Landing />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/Dashboard" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/order-history" element={
+        <ProtectedRoute>
+          <Layout>
+            <OrderHistory />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/CustomerPage" element={
+        <ProtectedRoute>
+          <Layout>
+            <CustomerPage />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/QR" element={
+        <ProtectedRoute>
+          <Layout>
+            <QR />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/MessageAll" element={
+        <ProtectedRoute>
+          <Layout>
+            <MessageAll totalCustomers={1000} />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/ProductMangementPage" element={
+        <ProtectedRoute>
+          <Layout>
+            <ProductManagementPage />
+          </Layout>
+        </ProtectedRoute>
+      } />
+    </Routes>
   );
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </Router>
   );
 }
 

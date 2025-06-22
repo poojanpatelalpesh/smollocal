@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Plus, ArrowLeft } from 'lucide-react';
 import { Category, Product, ProductFormData } from './types/types';
 import { ProductCard } from './ProductCard';
-import { ProductModal } from './modals/ProductModal';
+import ProductModal  from './modals/ProductModal';
 import { useAuth } from '../../context/AuthContext';
 import { productsAPI } from '../../services/api';
 import './ProductManager.css';

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import OrderList from '../components/OrderList';
 import { useAuth } from '../context/AuthContext';
 import { ordersAPI, Order } from '../services/api';
@@ -6,6 +8,7 @@ import './OrderHistory.css';
 
 const OrderHistory: React.FC = () => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

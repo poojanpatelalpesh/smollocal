@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { qrAPI } from '../services/api';
 import './QR.css';
 
 const QR: React.FC = () => {
   const { token, seller } = useAuth();
+  const navigate = useNavigate();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [storeUrl, setStoreUrl] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
@@ -64,8 +67,6 @@ const QR: React.FC = () => {
       console.error('Error copying to clipboard:', error);
     }
   };
-   const navigate = useNavigate();
-  
 
   if (isLoading) {
     return (
