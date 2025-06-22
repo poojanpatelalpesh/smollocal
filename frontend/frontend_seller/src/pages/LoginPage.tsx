@@ -1,22 +1,36 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 import { FormCard, Button } from '../components/FormCard';
+import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
     if (!email || !password) {
-      alert('Please fill in all required fields');
+      setError('Please fill in all required fields');
       return;
     }
-    // Handle login logic here
-    console.log('Login attempt:', { email, password });
-    alert('Login successful! (This is a demo)');
+
+    setIsLoading(true);
+    try {
+      await login(email, password);
+      navigate('/Landing');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,6 +39,19 @@ export const LoginPage: React.FC = () => {
       subtitle="Sign in to your seller account"
     >
       <form onSubmit={handleSubmit} className="login-form">
+        {error && (
+          <div className="error-message" style={{ 
+            color: 'red', 
+            marginBottom: '1rem', 
+            textAlign: 'center',
+            padding: '0.5rem',
+            backgroundColor: '#fee',
+            borderRadius: '4px'
+          }}>
+            {error}
+          </div>
+        )}
+        
         <div className="login-field">
           <label className="login-label">
             Email Address <span className="login-required">*</span>
@@ -38,6 +65,7 @@ export const LoginPage: React.FC = () => {
               placeholder="Enter your email"
               required
               className="login-input"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -55,14 +83,15 @@ export const LoginPage: React.FC = () => {
               placeholder="Enter your password"
               required
               className="login-input"
+              disabled={isLoading}
             />
           </div>
         </div>
 
-        <Button type="submit">
+        <Button type="submit" disabled={isLoading}>
           <span className="login-button-content">
-            Sign In
-            <ArrowRight className="w-4 h-4" />
+            {isLoading ? 'Signing In...' : 'Sign In'}
+            {!isLoading && <ArrowRight className="w-4 h-4" />}
           </span>
         </Button>
 
@@ -70,7 +99,7 @@ export const LoginPage: React.FC = () => {
           <p className="login-footer-text">
             Don't have an account?{' '}
             <Link 
-              to="/signup" 
+              to="/Signup" 
               className="login-link"
             >
               Create one

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Connection Test</title>
+</head>
+<body>
+    <h1>Backend API Connection Test</h1>
+    <button onclick="testConnection()">Test Backend Connection</button>
+    <button onclick="testAuth()">Test Authentication</button>
+    <button onclick="testSimple()">Test Root Endpoint</button>
+    <button onclick="testSellers()">Test Sellers Endpoint</button>
+    <div id="results"></div>
+
+    <script>
+        async function testConnection() {
+            const results = document.getElementById('results');
+            try {
+                const response = await fetch('http://localhost:7890/');
+                const text = await response.text();
+                results.innerHTML = '<p style="color: green;">✅ Backend is running!</p><pre>' + text + '</pre>';
+            } catch (error) {
+                results.innerHTML = '<p style="color: red;">❌ Backend connection failed: ' + error.message + '</p>';
+                console.error('Backend error:', error);
+            }
+        }
+
+        async function testSellers() {
+            const results = document.getElementById('results');
+            try {
+                const response = await fetch('http://localhost:7890/api/sellers');
+                const text = await response.text();
+                console.log('Sellers response:', text);
+                
+                try {
+                    const data = JSON.parse(text);
+                    results.innerHTML = '<p style="color: green;">✅ Sellers endpoint working!</p><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } catch (parseError) {
+                    results.innerHTML = '<p style="color: red;">❌ Sellers endpoint returned HTML:</p><pre>' + text.substring(0, 500) + '</pre>';
+                }
+            } catch (error) {
+                results.innerHTML = '<p style="color: red;">❌ Sellers endpoint failed: ' + error.message + '</p>';
+            }
+        }
+
+        async function testSimple() {
+            const results = document.getElementById('results');
+            try {
+                const response = await fetch('http://localhost:7890/');
+                const text = await response.text();
+                results.innerHTML = '<p style="color: blue;">🔍 Root endpoint response:</p><pre>' + text + '</pre>';
+            } catch (error) {
+                results.innerHTML = '<p style="color: red;">❌ Root endpoint failed: ' + error.message + '</p>';
+            }
+        }
+
+        async function testAuth() {
+            const results = document.getElementById('results');
+            const token = localStorage.getItem('sellerToken');
+            
+            if (!token) {
+                results.innerHTML = '<p style="color: orange;">⚠️ No authentication token found. Please login first.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:7890/api/sellers/profile', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    results.innerHTML = '<p style="color: green;">✅ Authentication working! Seller: ' + data.name + '</p>';
+                    console.log('Auth response:', data);
+                } else {
+                    const text = await response.text();
+                    results.innerHTML = '<p style="color: red;">❌ Authentication failed: ' + response.status + '</p><pre>' + text.substring(0, 300) + '</pre>';
+                }
+            } catch (error) {
+                results.innerHTML = '<p style="color: red;">❌ Auth test failed: ' + error.message + '</p>';
+                console.error('Auth error:', error);
+            }
+        }
+    </script>
+</body>
+</html> 

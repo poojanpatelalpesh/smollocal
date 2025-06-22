@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { User, Mail, Lock, Phone, Building, MapPin, Globe, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, Mail, Lock, Phone, Building, MapPin, ArrowRight } from 'lucide-react';
 import { FormCard, Button } from '../components/FormCard';
+import { useAuth } from '../context/AuthContext';
 import './Signup.css';
 
 export const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    sellerName: '',
+    name: '',
     email: '',
     password: '',
-    phoneNumber: '',
+    phone: '',
     businessName: '',
-    storeAddress: '',
-    domainName: ''
+    address: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -25,30 +29,37 @@ export const SignupPage: React.FC = () => {
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
     if (value.length <= 10) {
-      handleInputChange('phoneNumber', value);
+      handleInputChange('phone', value);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
     // Validation
     const requiredFields = Object.entries(formData);
     const emptyFields = requiredFields.filter(([_, value]) => !value.trim());
     
     if (emptyFields.length > 0) {
-      alert('Please fill in all required fields');
+      setError('Please fill in all required fields');
       return;
     }
 
-    if (formData.phoneNumber.length !== 10) {
-      alert('Phone number must be exactly 10 digits');
+    if (formData.phone.length !== 10) {
+      setError('Phone number must be exactly 10 digits');
       return;
     }
 
-    // Handle signup logic here
-    console.log('Signup attempt:', formData);
-    alert('Account created successfully! (This is a demo)');
+    setIsLoading(true);
+    try {
+      await register(formData);
+      navigate('/Landing');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,6 +68,19 @@ export const SignupPage: React.FC = () => {
       subtitle="Join our platform as a seller"
     >
       <form onSubmit={handleSubmit} className="signup-form">
+        {error && (
+          <div className="error-message" style={{ 
+            color: 'red', 
+            marginBottom: '1rem', 
+            textAlign: 'center',
+            padding: '0.5rem',
+            backgroundColor: '#fee',
+            borderRadius: '4px'
+          }}>
+            {error}
+          </div>
+        )}
+
         <div className="signup-field">
           <label className="signup-label">
             Seller Name <span className="signup-required">*</span>
@@ -65,11 +89,12 @@ export const SignupPage: React.FC = () => {
             <User className="signup-icon" />
             <input
               type="text"
-              value={formData.sellerName}
-              onChange={(e) => handleInputChange('sellerName', e.target.value)}
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
               placeholder="Enter seller name"
               required
               className="signup-input"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -87,6 +112,7 @@ export const SignupPage: React.FC = () => {
               placeholder="Enter email address"
               required
               className="signup-input"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -104,6 +130,7 @@ export const SignupPage: React.FC = () => {
               placeholder="Create password"
               required
               className="signup-input"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -116,12 +143,13 @@ export const SignupPage: React.FC = () => {
             <Phone className="signup-icon" />
             <input
               type="tel"
-              value={formData.phoneNumber}
+              value={formData.phone}
               onChange={handlePhoneChange}
               placeholder="Enter 10-digit phone number"
               required
               maxLength={10}
               className="signup-input"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -139,6 +167,7 @@ export const SignupPage: React.FC = () => {
               placeholder="Enter business name"
               required
               className="signup-input"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -151,36 +180,20 @@ export const SignupPage: React.FC = () => {
             <MapPin className="signup-icon" />
             <input
               type="text"
-              value={formData.storeAddress}
-              onChange={(e) => handleInputChange('storeAddress', e.target.value)}
+              value={formData.address}
+              onChange={(e) => handleInputChange('address', e.target.value)}
               placeholder="Enter store address"
               required
               className="signup-input"
+              disabled={isLoading}
             />
           </div>
         </div>
 
-        <div className="signup-field">
-          <label className="signup-label">
-            Domain Name <span className="signup-required">*</span>
-          </label>
-          <div className="signup-input-container">
-            <Globe className="signup-icon" />
-            <input
-              type="text"
-              value={formData.domainName}
-              onChange={(e) => handleInputChange('domainName', e.target.value)}
-              placeholder="Enter domain name"
-              required
-              className="signup-input"
-            />
-          </div>
-        </div>
-
-        <Button type="submit">
+        <Button type="submit" disabled={isLoading}>
           <span className="signup-button-content">
-            Create Account
-            <ArrowRight className="w-4 h-4" />
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+            {!isLoading && <ArrowRight className="w-4 h-4" />}
           </span>
         </Button>
 
@@ -188,7 +201,7 @@ export const SignupPage: React.FC = () => {
           <p className="signup-footer-text">
             Already have an account?{' '}
             <Link 
-              to="/login" 
+              to="/Login" 
               className="signup-link"
             >
               Sign in

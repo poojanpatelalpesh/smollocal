@@ -1,30 +1,30 @@
 export interface Category {
-  id: string;
+  _id: string;
   name: string;
-  // description: string;
-  createdAt: Date;
-  updatedAt: Date;
+  seller: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Product {
-  id: string;
-  categoryId: string;
+  _id: string;
+  seller: string;
   name: string;
   description: string;
-  image: string;
-  createdAt: Date;
-  updatedAt: Date;
-  price: string;
+  price: number;
+  category: string;
+  imageUrl: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CategoryFormData {
   name: string;
-  // description: string;
 }
 
 export interface ProductFormData {
   name: string;
   description: string;
-  image: string;
-  price: string;
+  price: number;
+  image?: File;
 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
 import OrderHistory from './pages/OrderHistory';
 import Layout from './components/Layout';
@@ -11,30 +12,108 @@ import Landing from './pages/Landing';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SingupPage';
 import FirstPage from './pages/FirstPage';
-function App() {
+import Price from './pages/Price';
+
+// Protected Route Component
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  return isAuthenticated ? <>{children}</> : <Navigate to="/Login" replace />;
+};
+
+// Public Route Component (redirects to landing if already authenticated)
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  return isAuthenticated ? <Navigate to="/Landing" replace /> : <>{children}</>;
+};
+
+function AppRoutes() {
   return (
     <Router>
       <Routes>
-        {/* ❌ No Layout for these routes */}
-        <Route path="/Landing" element={<Landing />} />
-        <Route path="/Landing/order-history" element={<OrderHistory />} />
-        <Route path="/order-history" element={<OrderHistory />} />
-        <Route path="/Landing/CustomerPage" element={<CustomerPage />} />
-        <Route path="/Landing/QR" element={<QR />} />
-        <Route path="/Landing/MessageAll" element={<MessageAll totalCustomers={1000} />} />
-        <Route path="/Landing/ProductMangementPage" element={<ProductManagementPage />} />
-        <Route path='/Login' element={<LoginPage />} />
-        <Route path='/Signup' element={<SignupPage />} />
-        <Route path='/' element={<FirstPage />} />
-          
+        {/* Public Routes */}
+        <Route path="/" element={<FirstPage />} />
+        <Route path="/Price" element={<Price />} />
         
-        <Route path="/Landing/Dashboard" element={
-          <Layout>
+        {/* Auth Routes */}
+        <Route path="/Login" element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        } />
+        <Route path="/Signup" element={
+          <PublicRoute>
+            <SignupPage />
+          </PublicRoute>
+        } />
+        
+        {/* Protected Routes */}
+        <Route path="/Landing" element={
+          <ProtectedRoute>
+            <Layout>
+              <Landing />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/Dashboard" element={
+          <ProtectedRoute>
             <Dashboard />
-          </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/order-history" element={
+          <ProtectedRoute>
+            <Layout>
+              <OrderHistory />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/CustomerPage" element={
+          <ProtectedRoute>
+            <Layout>
+              <CustomerPage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/QR" element={
+          <ProtectedRoute>
+            <Layout>
+              <QR />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/MessageAll" element={
+          <ProtectedRoute>
+            <Layout>
+              <MessageAll totalCustomers={1000} />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/ProductMangementPage" element={
+          <ProtectedRoute>
+            <Layout>
+              <ProductManagementPage />
+            </Layout>
+          </ProtectedRoute>
         } />
       </Routes>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 

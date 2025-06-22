@@ -4,7 +4,8 @@ import { Category, Product, CategoryFormData } from './types/types';
 import { CategoryCard } from './CategoryCard';
 import { CategoryModal } from './modals/CategoryModal';
 import { ProductManager } from './ProductManager';
-import { createCategory, updateCategory } from './utils/storage';
+import { useAuth } from '../../context/AuthContext';
+import { categoriesAPI, productsAPI } from '../../services/api';
 import './CategoryManager.css';
 
 interface CategoryManagerProps {
@@ -20,31 +21,61 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
   onUpdateCategories,
   onUpdateProducts,
 }) => {
+  const { token } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreateCategory = (data: CategoryFormData) => {
-    const newCategory = createCategory(data.name);
-    onUpdateCategories([...categories, newCategory]);
-  };
-
-  const handleEditCategory = (data: CategoryFormData) => {
-    if (editingCategory) {
-      const updatedCategory = updateCategory(editingCategory, data);
-      const updatedCategories = categories.map(cat =>
-        cat.id === editingCategory.id ? updatedCategory : cat
-      );
-      onUpdateCategories(updatedCategories);
+  const handleCreateCategory = async (data: CategoryFormData) => {
+    if (!token) return;
+    
+    setIsLoading(true);
+    try {
+      const newCategory = await categoriesAPI.create(token, data.name);
+      onUpdateCategories([...categories, newCategory]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error creating category:', error);
+      alert('Failed to create category');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDeleteCategory = (categoryId: string) => {
+  const handleEditCategory = async (data: CategoryFormData) => {
+    if (!token || !editingCategory) return;
+    
+    setIsLoading(true);
+    try {
+      const updatedCategory = await categoriesAPI.update(token, editingCategory._id, data.name);
+      const updatedCategories = categories.map(cat =>
+        cat._id === editingCategory._id ? updatedCategory : cat
+      );
+      onUpdateCategories(updatedCategories);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error updating category:', error);
+      alert('Failed to update category');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    if (!token) return;
+    
     if (window.confirm('Are you sure you want to delete this category? All products in this category will also be deleted.')) {
-      const filteredCategories = categories.filter(cat => cat.id !== categoryId);
-      const filteredProducts = products.filter(prod => prod.categoryId !== categoryId);
-      onUpdateCategories(filteredCategories);
-      onUpdateProducts(filteredProducts);
+      try {
+        await categoriesAPI.delete(token, categoryId);
+        const filteredCategories = categories.filter(cat => cat._id !== categoryId);
+        const filteredProducts = products.filter(prod => prod.category !== categoryId);
+        onUpdateCategories(filteredCategories);
+        onUpdateProducts(filteredProducts);
+      } catch (error) {
+        console.error('Error deleting category:', error);
+        alert('Failed to delete category');
+      }
     }
   };
 
@@ -59,14 +90,14 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
   };
 
   const getProductCount = (categoryId: string) => {
-    return products.filter(product => product.categoryId === categoryId).length;
+    return products.filter(product => product.category === categoryId).length;
   };
 
   if (selectedCategory) {
     return (
       <ProductManager
         category={selectedCategory}
-        products={products.filter(p => p.categoryId === selectedCategory.id)}
+        products={products.filter(p => p.category === selectedCategory._id)}
         onUpdateProducts={onUpdateProducts}
         onBack={() => setSelectedCategory(null)}
       />
@@ -84,6 +115,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           <button
             onClick={openCreateModal}
             className="category-manager-add-btn"
+            disabled={isLoading}
           >
             <Plus />
             <span>Add Category</span>
@@ -101,6 +133,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
               <button
                 onClick={openCreateModal}
                 className="category-manager-empty-btn"
+                disabled={isLoading}
               >
                 Create Category
               </button>
@@ -110,9 +143,9 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           <div className="category-manager-grid">
             {categories.map((category) => (
               <CategoryCard
-                key={category.id}
+                key={category._id}
                 category={category}
-                productCount={getProductCount(category.id)}
+                productCount={getProductCount(category._id)}
                 onEdit={openEditModal}
                 onDelete={handleDeleteCategory}
                 onSelect={setSelectedCategory}
@@ -127,6 +160,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           onSubmit={editingCategory ? handleEditCategory : handleCreateCategory}
           category={editingCategory}
           title={editingCategory ? 'Edit Category' : 'Create New Category'}
+          isLoading={isLoading}
         />
       </div>
     </div>

@@ -46,6 +46,26 @@ a:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.welcome-text {
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+}
+
 .dashboard-header h1 {
   font-size: 28px;
   font-weight: 600;
