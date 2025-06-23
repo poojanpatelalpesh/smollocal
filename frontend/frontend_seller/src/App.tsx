@@ -65,7 +65,9 @@ function AppRoutes() {
       } />
       <Route path="/Dashboard" element={
         <ProtectedRoute>
-          <Dashboard />
+          <Layout>
+            <Dashboard />
+          </Layout>
         </ProtectedRoute>
       } />
       <Route path="/order-history" element={

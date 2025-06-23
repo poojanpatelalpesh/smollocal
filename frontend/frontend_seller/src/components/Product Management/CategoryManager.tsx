@@ -3,6 +3,8 @@ import { Plus } from 'lucide-react';
 import { Category, Product, CategoryFormData } from './types/types';
 import { CategoryCard } from './CategoryCard';
 import { CategoryModal } from './modals/CategoryModal';
+import ConfirmModal from '../ConfirmModal';
+import Notification from '../Notification';
 import { ProductManager } from './ProductManager';
 import { useAuth } from '../../context/AuthContext';
 import { categoriesAPI, productsAPI } from '../../services/api';
@@ -26,6 +28,31 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | undefined>();
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; categoryId: string | null; categoryName: string }>({
+    isOpen: false,
+    categoryId: null,
+    categoryName: ''
+  });
+  const [notification, setNotification] = useState<{
+    isOpen: boolean;
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message?: string;
+  }>({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
+  });
+
+  const showNotification = (type: 'success' | 'error' | 'warning' | 'info', title: string, message?: string) => {
+    setNotification({
+      isOpen: true,
+      type,
+      title,
+      message
+    });
+  };
 
   const handleCreateCategory = async (data: CategoryFormData) => {
     if (!token) return;
@@ -35,9 +62,10 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
       const newCategory = await categoriesAPI.create(token, data.name);
       onUpdateCategories([...categories, newCategory]);
       setIsModalOpen(false);
+      showNotification('success', 'Category Created', `${data.name} has been created successfully!`);
     } catch (error) {
       console.error('Error creating category:', error);
-      alert('Failed to create category');
+      showNotification('error', 'Creation Failed', 'Failed to create category. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -54,9 +82,10 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
       );
       onUpdateCategories(updatedCategories);
       setIsModalOpen(false);
+      showNotification('success', 'Category Updated', `${data.name} has been updated successfully!`);
     } catch (error) {
       console.error('Error updating category:', error);
-      alert('Failed to update category');
+      showNotification('error', 'Update Failed', 'Failed to update category. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -65,18 +94,26 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
   const handleDeleteCategory = async (categoryId: string) => {
     if (!token) return;
     
-    if (window.confirm('Are you sure you want to delete this category? All products in this category will also be deleted.')) {
-      try {
-        await categoriesAPI.delete(token, categoryId);
-        const filteredCategories = categories.filter(cat => cat._id !== categoryId);
-        const filteredProducts = products.filter(prod => prod.category !== categoryId);
-        onUpdateCategories(filteredCategories);
-        onUpdateProducts(filteredProducts);
-      } catch (error) {
-        console.error('Error deleting category:', error);
-        alert('Failed to delete category');
-      }
+    try {
+      await categoriesAPI.delete(token, categoryId);
+      const filteredCategories = categories.filter(cat => cat._id !== categoryId);
+      const filteredProducts = products.filter(prod => prod.category !== categoryId);
+      onUpdateCategories(filteredCategories);
+      onUpdateProducts(filteredProducts);
+      setDeleteModal({ isOpen: false, categoryId: null, categoryName: '' });
+      showNotification('success', 'Category Deleted', 'Category has been deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      showNotification('error', 'Deletion Failed', 'Failed to delete category. Please try again.');
     }
+  };
+
+  const openDeleteModal = (category: Category) => {
+    setDeleteModal({
+      isOpen: true,
+      categoryId: category._id,
+      categoryName: category.name
+    });
   };
 
   const openCreateModal = () => {
@@ -122,37 +159,35 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           </button>
         </div>
 
-        {categories.length === 0 ? (
-          <div className="category-manager-empty">
-            <div className="category-manager-empty-card">
-              {/* <div className="category-manager-empty-icon">
-                <Plus />
-              </div> */}
-              <h2>No Categories Yet</h2>
-              <p>Create your first category to start organizing your products</p>
-              <button
-                onClick={openCreateModal}
-                className="category-manager-empty-btn"
-                disabled={isLoading}
-              >
-                Create Category
-              </button>
+        <div className="category-manager-grid">
+          {categories.map((category) => (
+            <CategoryCard
+              key={category._id}
+              category={category}
+              productCount={getProductCount(category._id)}
+              onEdit={openEditModal}
+              onDelete={openDeleteModal}
+              onSelect={setSelectedCategory}
+            />
+          ))}
+          
+          {/* Always show Create Category card */}
+          <div className="category-card create-category-card" onClick={openCreateModal}>
+            <div className="category-card-content">
+              <div className="category-card-header">
+                <div className="category-card-info">
+                  <div className="category-card-icon">
+                    <Plus />
+                  </div>
+                  <div>
+                    <h3 className="category-card-title">Create Category</h3>
+                    <p className="category-card-count">Add new category</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="category-manager-grid">
-            {categories.map((category) => (
-              <CategoryCard
-                key={category._id}
-                category={category}
-                productCount={getProductCount(category._id)}
-                onEdit={openEditModal}
-                onDelete={handleDeleteCategory}
-                onSelect={setSelectedCategory}
-              />
-            ))}
-          </div>
-        )}
+        </div>
 
         <CategoryModal
           isOpen={isModalOpen}
@@ -161,6 +196,26 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           category={editingCategory}
           title={editingCategory ? 'Edit Category' : 'Create New Category'}
           isLoading={isLoading}
+        />
+
+        <ConfirmModal
+          isOpen={deleteModal.isOpen}
+          onClose={() => setDeleteModal({ isOpen: false, categoryId: null, categoryName: '' })}
+          onConfirm={() => deleteModal.categoryId && handleDeleteCategory(deleteModal.categoryId)}
+          title="Delete Category"
+          message={`Are you sure you want to delete "${deleteModal.categoryName}"? This action cannot be undone and will also delete all products in this category.`}
+          type="danger"
+          confirmText="Delete Category"
+          cancelText="Cancel"
+          isLoading={isLoading}
+        />
+
+        <Notification
+          isOpen={notification.isOpen}
+          onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
+          type={notification.type}
+          title={notification.title}
+          message={notification.message}
         />
       </div>
     </div>

@@ -14,8 +14,12 @@ exports.createProduct = async (req, res) => {
       return res.status(400).json({ message: 'Invalid category' });
     }
 
-    const result = await uploadImage(req.file.path);
-    fs.unlinkSync(req.file.path); // remove local file after upload
+    let imageUrl = '';
+    if (req.file) {
+      const result = await uploadImage(req.file.path);
+      fs.unlinkSync(req.file.path); // remove local file after upload
+      imageUrl = result.secure_url;
+    }
 
     const product = new Product({
       seller: sellerId,
@@ -23,13 +27,14 @@ exports.createProduct = async (req, res) => {
       description,
       price,
       category,
-      imageUrl: result.secure_url,
+      imageUrl,
     });
 
     await product.save();
     res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error creating product:', error);
+    res.status(500).json({ error: error.message || 'Failed to create product' });
   }
 };
 

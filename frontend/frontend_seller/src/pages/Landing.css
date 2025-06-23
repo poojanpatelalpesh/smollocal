@@ -82,24 +82,22 @@ a:active {
 /* Grid Layout */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr;
   gap: 40px;
   max-width: 1600px;
   margin: 0 auto;
   height: 100%;
 }
 
-/* First Row Container */
-.first-row {
-  grid-column: 1 / -1;
+/* Top Row - Business, Add Category, Add Customer, Store QR */
+.top-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 40px;
 }
 
-/* Second Row Container */
-.second-row {
-  grid-column: 1 / -1;
+/* Bottom Row - Pending Orders, Completed Orders, Notify Customers */
+.bottom-row {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;

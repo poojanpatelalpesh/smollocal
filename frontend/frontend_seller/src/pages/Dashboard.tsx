@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import OrderList from '../components/OrderList';
 import { useAuth } from '../context/AuthContext';
 import { ordersAPI, Order } from '../services/api';
@@ -86,13 +88,19 @@ const Dashboard: React.FC = () => {
     return (
       <div className="dashboard">
         <div className="dashboard-header">
-          <h1>Orders Dashboard</h1>
-        </div>
-        <div className="error-state">
-          <p>Error: {error}</p>
-          <button onClick={loadOrders} className="retry-btn">
-            Retry
-          </button>
+          <div className="dashboard-title-section">
+            <Link to="/Landing" className="back-btn">
+              <ArrowLeft size={20} />
+              <span>Back to Dashboard</span>
+            </Link>
+            <h1>Orders Dashboard</h1>
+          </div>
+          <div className="error-state">
+            <p>Error: {error}</p>
+            <button onClick={loadOrders} className="retry-btn">
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -101,7 +109,13 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>Orders Dashboard</h1>
+        <div className="dashboard-title-section">
+          <Link to="/Landing" className="back-btn">
+            <ArrowLeft size={20} />
+            <span>Back to Dashboard</span>
+          </Link>
+          <h1>Orders Dashboard</h1>
+        </div>
         <div className="filter-controls">
           <button 
             className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}

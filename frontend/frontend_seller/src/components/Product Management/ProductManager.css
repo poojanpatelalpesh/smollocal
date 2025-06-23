@@ -1,22 +1,21 @@
 .product-manager {
-  min-height: 100vh;
+  min-height: calc(100vh - 80px);
   background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+  padding: 2rem;
+  margin-top: 0;
 }
 
-/* .product-manager-container {
-  max-width: 1200px;
+.product-manager-container {
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-} */
+}
 
 .product-manager-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 10px;
   margin-bottom: 2rem;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0;
 }
 
 .product-manager-title-section {
@@ -190,4 +189,59 @@
   .product-manager-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Flex container for title and price */
+.product-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.create-product-card {
+  background: white;
+  border: 2px dashed #d1d5db;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-product-card:hover {
+  border-color: #059669;
+  background: #f0fdf4;
+  transform: translateY(-2px);
+}
+
+.create-product-card .product-card-placeholder {
+  background: #f3f4f6;
+  border: 2px dashed #d1d5db;
+}
+
+.create-product-card:hover .product-card-placeholder {
+  background: #ecfdf5;
+  border-color: #059669;
+}
+
+.create-product-card .product-card-placeholder svg {
+  color: #6b7280;
+}
+
+.create-product-card:hover .product-card-placeholder svg {
+  color: #059669;
+}
+
+.create-product-card .product-card-title {
+  color: #6b7280;
+}
+
+.create-product-card:hover .product-card-title {
+  color: #059669;
+}
+
+.create-product-card .product-card-description {
+  color: #9ca3af;
+}
+
+.create-product-card:hover .product-card-description {
+  color: #059669;
 }

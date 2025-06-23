@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
   required: true
 },
 
-  imageUrl: { type: String, required: true }, // This will be URL or path to the image
+  imageUrl: { type: String }, // This will be URL or path to the image
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);

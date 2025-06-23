@@ -130,24 +130,17 @@ const Landing: React.FC = () => {
 
       <main className="dashboard-main">
         <div className="dashboard-grid">
-          {/* First Row (4 cards) */}
-          <div className="first-row">
+          {/* Top Row - 4 cards side by side */}
+          <div className="top-row">
             {/* Business Info Card */}
             <div className="card business-card">
               <div className="business-info">
-                
-                  {/* Main image */}
-                  <img 
-                    src={logoSrc} 
-                    alt="Business logo" 
-                    className="main-image"
-                    onError={handleImageError}
-                  />
-                  {/* Fallback icon */}
-                  {/* <div className="fallback-icon">
-                    <span>🏪</span>
-                  </div> */}
-                
+                <img 
+                  src={logoSrc} 
+                  alt="Business logo" 
+                  className="main-image"
+                  onError={handleImageError}
+                />
                 <h4>{seller?.businessName || 'Your Business'}</h4>
                 <div className="status-indicator">
                   <span className="status-dot"></span>
@@ -197,9 +190,9 @@ const Landing: React.FC = () => {
             </Link>
           </div>
 
-          {/* Second Row (3 cards with orders taking 2fr width) */}
-          <div className="second-row">
-            {/* Active Orders Card (wider - takes 2fr) */}
+          {/* Bottom Row - 3 cards */}
+          <div className="bottom-row">
+            {/* Pending Orders Card */}
             <Link to="/Dashboard" className="card-link">
               <div className="card orders-card">
                 <div className="orders-content">
@@ -211,7 +204,7 @@ const Landing: React.FC = () => {
               </div>
             </Link>
 
-            {/* Previous Orders Card (takes 1fr) */}
+            {/* Previous Orders Card */}
             <Link to="/order-history" className="card-link">
               <div className="card action-card">
                 <div className="card-icon">
@@ -224,7 +217,7 @@ const Landing: React.FC = () => {
               </div>
             </Link>
 
-            {/* Notify Customers Card (takes 1fr) */}
+            {/* Notify Customers Card */}
             <Link to="/MessageAll" className="card-link">
               <div className="card action-card">
                 <div className="card-icon notification-icon">
