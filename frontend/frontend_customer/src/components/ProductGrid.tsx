@@ -8,17 +8,24 @@ interface ProductGridProps {
 
 const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // Extract unique categories dynamically
+  const categories = Array.from(new Set(products.map(p => p.category)));
+
+  // Filter products by category and search
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <section className="products-section">
-     
+      <div className='products-background'>
         <div className="products-header">
-          <h2>Our Products</h2>
+          <h1>Our Products</h1>
           
           <div className="search-container">
             <input
@@ -29,8 +36,19 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
               className="search-input"
             />
           </div>
+          
+          <select
+            value={selectedCategory}
+            onChange={e => setSelectedCategory(e.target.value)}
+            className="category-dropdown"
+          >
+            <option value="All">All Categories</option>
+            {categories.map(category => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
         </div>
-        
+
         {filteredProducts.length === 0 ? (
           <div className="no-results">
             <p>No products found matching your search.</p>
@@ -42,6 +60,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             ))}
           </div>
         )}
+      </div>
     </section>
   );
 };

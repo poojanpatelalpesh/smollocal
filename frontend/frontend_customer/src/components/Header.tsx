@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import CartModal from './CartModal';
 import '../styles/header.css';
+import OurLogo from '../assets/images/Our-Logo.png';
 
 type HeaderProps = {
   darkMode: boolean;
@@ -20,14 +21,12 @@ const Header: React.FC<HeaderProps> = () => {
     <header className="header">
       <div className="container">
         <div className="header-content">
-          {/* Logo */}
-          <img
-            src="/images/logo.jpeg"
-            className="logo-image"
-            alt="Company Logo"
-          />
+          {/* Logo - Left Corner */}
+          <div className="logo">
+            <img src={OurLogo} alt="Our Logo" className="logo-image" />
+          </div>
 
-          {/* Cart button */}
+          {/* Cart button - Right Corner */}
           <div>
             <button
               className="cart-button"

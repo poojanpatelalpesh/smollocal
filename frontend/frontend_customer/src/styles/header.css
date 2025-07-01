@@ -1,26 +1,48 @@
 /* Header Styles */
 .header {
-  justify-content: stretch;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  margin: 0;
+  padding: 0;
+}
+.hero{
+  background-color: #003e29 !important;
+}
+
+.header .container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .header-content {
-  display: flex;
-  justify-content: space-between;
+  display: flex; 
   align-items: center;
-  padding: 0.5rem;
+  justify-content: space-between;
+  padding: 0 3rem 0 0 !important;
+  width: 100%;
 }
 
 .logo {
-  justify-content: left;
-  align-items: right;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
   color: #4f46e5;
+  margin: 0;
+  padding: 0;
+}
+
+.logo-image {
+  height: 800px;
+  width: 200px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links {
@@ -43,18 +65,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: auto;       /* allow it to size naturally */
-  width: auto;        /* allow it to size naturally */
+  height: auto;
+  width: auto;
   background: none;
   border: none;
   cursor: pointer;
   color: #4b5563;
-  font-size: 1.5rem;  /* ensure the icon size is big enough */
+  font-size: 1.5rem;
   padding: 0.5rem;
+  margin: 0;
 }
 
 .cart-button svg {
-  height: 24px;  /* or any size you prefer */
+  height: 24px;
   width: 24px;
 }
 
@@ -62,7 +85,7 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background-color: #4f46e5;
+  background-color: #003e29;
   color: white;
   font-size: 0.75rem;
   font-weight: bold;
@@ -70,19 +93,75 @@
   border-radius: 9999px;
 }
 
+/* Remove gaps between header and other sections */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body {
+  margin: 0;
+  padding: 0;
+}
 
+/* Ensure no gaps with hero section */
+.header + * {
+  margin-top: 0;
+}
 
+/* Tablet Styles */
+@media (max-width: 1024px) {
+  .header-content {
+    padding: 0 2rem 0 0 !important;
+  }
+  
+  .nav-links {
+    gap: 1.5rem;
+  }
+  
+  .logo-image {
+    object-fit: contain;
+    height: 55px;
+    width: 180px;
+  }
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
   .nav-links {
     display: none;
   }
-}
-.logo-image {
-  display: block;
-  margin: 0 auto;       /* center horizontally */
-  height: 45px;         /* fixed height */
-  width: 200px;          /* width adjusts automatically to keep aspect ratio */
-  max-width: 100%;      /* prevent overflow */
+  
+  .header-content {
+    padding: 0 1rem 0 0 !important;
+  }
+  
+  .logo-image {
+    object-fit: contain;
+    height: 45px;
+    width: 160px;
+  }
 }
 
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0 0.5rem 0 0 !important;
+  }
+  
+  .logo-image {
+    object-fit: contain;
+    height: 65px;
+    width: 150px;
+  }
+  
+  .cart-button {
+    padding: 0.25rem;
+  }
+  
+  .cart-button svg {
+    height: 20px;
+    width: 20px;
+  }
+}

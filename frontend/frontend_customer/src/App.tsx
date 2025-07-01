@@ -28,19 +28,30 @@ function App() {
     <CartProvider>
       <Router>
         <div className={`app ${darkMode ? 'dark' : ''}`}>
-          <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-
+          {/* CartModal should be available on all pages */}
           <CartModal isOpen={isCartOpen} onClose={closeCartSlider} />
-
-          <main>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/checkout" element={<CheckoutPage openCartSlider={openCartSlider} />} />
-              <Route path="/order-status" element={<OrderStatus openCartSlider={openCartSlider} />} /> {/* <-- Passed here */}
-            </Routes>
-          </main>
-
-          <Footer />
+          
+          <Routes>
+            <Route
+              path="/checkout"
+              element={<CheckoutPage openCartSlider={openCartSlider} />}
+            />
+            <Route
+              path="*"
+              element={
+                <>
+                  <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+                  <main>
+                    <Routes>
+                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/order-status" element={<OrderStatus openCartSlider={openCartSlider} />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </>
+              }
+            />
+          </Routes>
         </div>
       </Router>
     </CartProvider>

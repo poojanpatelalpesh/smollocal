@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../context/CartContext';
-import { Link, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
+import { Link, useNavigate } from 'react-router-dom';
+import OurLogo from '../assets/images/Our-Logo.png';
 
 interface FormData {
   firstName: string;
@@ -26,12 +27,36 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
   });
 
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'cod'>('online');
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [timer, setTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  const navigate = useNavigate(); // ✅ Added
+  const navigate = useNavigate();
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const subtotal = getCartTotal();
   const shipping = 0;
   const total = subtotal + shipping;
+
+  // Timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (showOtpModal && timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prev => {
+          if (prev <= 1) {
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [showOtpModal, timer]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,6 +65,21 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
       [name]: value
     }));
   };
+
+  // const generateOtp = () => {
+  //   const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
+  //   setGeneratedOtp(newOtp);
+  //   console.log('Generated OTP:', newOtp); // In real app, this would be sent via SMS
+  //   return newOtp;
+  // };
+
+  const generateOtp = () => {
+  const newOtp = '1111'; // Temporary fixed OTP
+  setGeneratedOtp(newOtp);
+  console.log('Generated OTP:', newOtp); // In real app, this would be sent via SMS
+  return newOtp;
+};
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,28 +96,109 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
       return;
     }
 
-    console.log('Order placed:', { formData, paymentMethod, cartItems });
-    navigate('/order-status', { state: { formData, paymentMethod, cartItems, total } }); // ✅ Replaced alert
+    // Generate and show OTP modal
+    generateOtp();
+    setShowOtpModal(true);
+    setTimer(60);
+    setCanResend(false);
+    setOtp(['', '', '', '']);
+    
+    // Focus first OTP input
+    setTimeout(() => {
+      otpRefs.current[0]?.focus();
+    }, 100);
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return; // Only allow digits
+    
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 3) {
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    // Handle backspace
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, 4);
+    if (/^\d{1,4}$/.test(pastedData)) {
+      const newOtp = pastedData.split('').concat(['', '', '', '']).slice(0, 4);
+      setOtp(newOtp);
+      // Focus the next empty input or last input
+      const nextIndex = Math.min(pastedData.length, 3);
+      otpRefs.current[nextIndex]?.focus();
+    }
+  };
+
+  const handleVerifyOtp = () => {
+    const enteredOtp = otp.join('');
+    if (enteredOtp.length !== 4) {
+      alert('Please enter complete 4-digit OTP');
+      return;
+    }
+
+    setIsVerifying(true);
+    
+    // Simulate verification delay
+    setTimeout(() => {
+      if (enteredOtp === generatedOtp) {
+        setIsVerifying(false);
+        setShowOtpModal(false);
+        console.log('Order placed:', { formData, paymentMethod, cartItems });
+        navigate('/order-status', { state: { formData, paymentMethod, cartItems, total } });
+      } else {
+        setIsVerifying(false);
+        alert('Invalid OTP. Please try again.');
+        setOtp(['', '', '', '']);
+        otpRefs.current[0]?.focus();
+      }
+    }, 1500);
+  };
+
+  const handleResendOtp = () => {
+    if (canResend) {
+      generateOtp();
+      setTimer(60);
+      setCanResend(false);
+      setOtp(['', '', '', '']);
+      otpRefs.current[0]?.focus();
+      alert('New OTP sent to your phone number');
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
     <div className="checkout-page">
       <div className="header">
         <div className="container header-content">
-          <h1 className="company-logo">OUR company logo</h1>
+          <div className="logo">
+            <img src={OurLogo} alt="Our Logo" className="logo-image" />
+          </div>
           <div className="breadcrumb">
             <Link to="/">Product</Link> /{' '}
             <button
               type="button"
-              onClick={openCartSlider}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                color: '#4f46e5',
-                cursor: 'pointer',
-                textDecoration: 'underline'
+              onClick={() => {
+                console.log('View Cart clicked');
+                openCartSlider();
               }}
+              className="breadcrumb-button"
             >
               View Cart
             </button>{' '}
@@ -167,11 +288,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
                   className="w-full border rounded px-3 py-2"
                 />
               </div>
-
-              <div className="save-info flex items-center gap-2">
-                <input type="checkbox" id="saveInfo" />
-                <label htmlFor="saveInfo">Save this information for faster check-out next time</label>
-              </div>
             </form>
           </div>
 
@@ -200,7 +316,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
                         <button type="button" onClick={() => addToCart(item.product)}>+</button>
                       </div>
                     </div>
-                    <div className="item-price">₹{item.product.price * item.quantity}</div>
+                    <div className="item-price">₹{(item.product.price * item.quantity).toFixed(2)}</div>
                   </div>
                 ))}
               </div>
@@ -208,7 +324,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
               <div className="order-totals">
                 <div><span>Subtotal:</span><span>₹{subtotal}</span></div>
                 <div><span>Shipping:</span><span>Free</span></div>
-                <div className="total"><span>Total:</span><span>₹{total}</span></div>
+                <div className="total"><span>Total:</span><span>₹{(total).toFixed(2)}</span></div>
               </div>
 
               <div className="payment-methods">
@@ -244,6 +360,67 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
           </div>
         </div>
       </div>
+
+      {/* OTP Modal */}
+      {showOtpModal && (
+        <div className="otp-modal-overlay">
+          <div className="otp-modal">
+            <h3 className="otp-title">
+              Verify Your Phone Number
+            </h3>
+            <p className="otp-subtitle">
+              We've sent a 4-digit OTP to {formData.phoneNumber}
+            </p>
+
+            <div className="otp-inputs">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={el => { otpRefs.current[index] = el; }}
+                  type="text"
+                  value={digit}
+                  onChange={e => handleOtpChange(index, e.target.value)}
+                  onKeyDown={e => handleOtpKeyDown(index, e)}
+                  onPaste={index === 0 ? handleOtpPaste : undefined}
+                  maxLength={1}
+                  className="otp-input"
+                />
+              ))}
+            </div>
+
+            <div className="otp-timer">
+              {timer > 0 ? (
+                <p className="timer-text">
+                  Resend OTP in {formatTime(timer)}
+                </p>
+              ) : (
+                <button
+                  onClick={handleResendOtp}
+                  className="resend-button"
+                >
+                  Resend OTP
+                </button>
+              )}
+            </div>
+
+            <div className="otp-actions">
+              <button
+                onClick={() => setShowOtpModal(false)}
+                className="cancel-button"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleVerifyOtp}
+                disabled={isVerifying || otp.join('').length !== 4}
+                className={`verify-button ${isVerifying || otp.join('').length !== 4 ? 'disabled' : ''}`}
+              >
+                {isVerifying ? 'Verifying...' : 'Verify OTP'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

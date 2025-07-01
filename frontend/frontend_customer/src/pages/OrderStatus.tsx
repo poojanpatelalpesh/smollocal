@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Package, CreditCard, Truck, MessageSquare, Loader2, Home, ShoppingCart } from 'lucide-react';
+import { CheckCircle, XCircle, Package, CreditCard, Truck, MessageSquare, Loader2, Home, ShoppingCart, Banknote } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/orderstatus.css';
 import { useCart } from '../context/CartContext';
@@ -39,11 +39,11 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
     total: number;
   } | undefined;
 
-  // If no state or paymentMethod is not online, show message and redirect option
-  if (!state || state.paymentMethod !== 'online') {
+  // If no state or invalid paymentMethod, show message and redirect option
+  if (!state || !['online', 'cod'].includes(state.paymentMethod)) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>This page is accessible only after selecting "Pay Online" at checkout.</h2>
+        <h2>This page is accessible only after completing checkout.</h2>
         <button 
           onClick={() => navigate('/')} 
           style={{
@@ -69,8 +69,9 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
   useEffect(() => {
     const loadingMessages = [
       'Processing your order...',
-      'Verifying payment details...',
+      'Verifying order details...',
       'Contacting seller...',
+      'Checking item availability...',
       'Finalizing order status...',
       'Almost ready...'
     ];
@@ -83,7 +84,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
       }
     }, 800);
 
-    // Simulate loading time (3-4 seconds)
+    // Simulate loading time (4-5 seconds)
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false);
       clearInterval(messageInterval);
@@ -109,7 +110,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
     shipping: 0,
     tax: 0,
     total: state.total,
-    paymentMethod: 'Credit Card',
+    paymentMethod: state.paymentMethod === 'online' ? 'Credit Card' : 'Cash on Delivery',
     estimatedDelivery: '3-5 business days',
   };
 
@@ -257,7 +258,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                       )}
                     </div>
                   </div>
-                  <div className="item-price">${item.price * item.quantity}</div>
+                  <div className="item-price">₹{item.price * item.quantity}</div>
                 </div>
               ))}
             </div>
@@ -265,21 +266,72 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
 
           {/* Conditional Content */}
           {orderStatus === 'approved' ? (
-            <div className="payment-section">
-              <div className="payment-card">
-                <div className="payment-details">
-                  <div className="payment-icon-container">
-                    <CreditCard className="payment-icon" />
-                  </div>
-                  <div>
-                    <h3 className="payment-title">Complete Your Payment</h3>
+            <>
+              {/* Payment Section for Online Payment */}
+              {state.paymentMethod === 'online' && (
+                <div className="payment-section">
+                  <div className="payment-card">
+                    <div className="payment-details">
+                      <div className="payment-icon-container">
+                        <CreditCard className="payment-icon" />
+                      </div>
+                      <div>
+                        <h3 className="payment-title">Complete Your Payment</h3>
+                      </div>
+                    </div>
+                    <button onClick={handlePayClick} className="payment-button">
+                      Pay Now 
+                    </button>
                   </div>
                 </div>
-                <button onClick={handlePayClick} className="payment-button">
-                  Pay Now 
-                </button>
-              </div>
-            </div>
+              )}
+
+              {/* COD Confirmation Section */}
+              {state.paymentMethod === 'cod' && (
+                <div className="cod-section">
+                  <div className="cod-card">
+                    <div className="cod-details">
+                      <div className="cod-icon-container">
+                        <Banknote className="cod-icon" />
+                      </div>
+                      <div className="cod-info">
+                        <h3 className="cod-title">Cash on Delivery Confirmed</h3>
+                        <p className="cod-description">
+                          Your order has been confirmed! Pay with cash when your items are delivered.
+                        </p>
+                        <div className="cod-delivery-info">
+                          <Truck className="cod-delivery-icon" />
+                          <span>Estimated delivery: {orderData.estimatedDelivery}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="cod-amount">
+                      <span className="cod-amount-label">Amount to pay:</span>
+                      <span className="cod-amount-value">₹{orderData.total}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Order tracking info */}
+                  <div className="order-tracking-info">
+                    <h4 className="tracking-title">What happens next?</h4>
+                    <div className="tracking-steps">
+                      <div className="tracking-step">
+                        <div className="step-number">1</div>
+                        <div className="step-text">We'll prepare your order for delivery</div>
+                      </div>
+                      <div className="tracking-step">
+                        <div className="step-number">2</div>
+                        <div className="step-text">You'll receive delivery updates via SMS/Email</div>
+                      </div>
+                      <div className="tracking-step">
+                        <div className="step-number">3</div>
+                        <div className="step-text">Pay cash to the delivery person</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <>
               <div className="seller-message-section">
@@ -303,7 +355,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                     <Home className="nav-button-icon" />
                     Return to Home
                   </button>
-                  <button onClick={handleReturnToCart} className="nav-button cart-button">
+                  <button onClick={handleReturnToCart} className="nav-button cart-button-bottom">
                     <ShoppingCart className="nav-button-icon" />
                     Return to Cart
                   </button>
@@ -320,7 +372,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
             <div className="summary-details">
               <div className="summary-row">
                 <span>Subtotal:</span>
-                <span>${orderData.subtotal}</span>
+                <span>₹{orderData.subtotal}</span>
               </div>
               <div className="summary-row">
                 <span className="summary-shipping">
@@ -328,16 +380,26 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                   Shipping:
                 </span>
                 <span className="summary-shipping-status">
-                  {orderData.shipping === 0 ? 'FREE' : `$${orderData.shipping}`}
+                  {orderData.shipping === 0 ? 'FREE' : `₹${orderData.shipping}`}
                 </span>
               </div>
               <div className="summary-row">
                 <span>Tax:</span>
-                <span>{orderData.tax === 0 ? '$0.00' : `$${orderData.tax}`}</span>
+                <span>{orderData.tax === 0 ? '₹0.00' : `₹${orderData.tax}`}</span>
+              </div>
+              <div className="summary-row">
+                <span>Payment Method:</span>
+                <span className="payment-method-badge">
+                  {state.paymentMethod === 'online' ? (
+                    <><CreditCard className="payment-method-icon" /> Online</>
+                  ) : (
+                    <><Banknote className="payment-method-icon" /> COD</>
+                  )}
+                </span>
               </div>
               <div className="summary-total">
                 <span>Total:</span>
-                <span className="summary-total-value">${orderData.total}</span>
+                <span className="summary-total-value">₹{orderData.total}</span>
               </div>
             </div>
           </div>
