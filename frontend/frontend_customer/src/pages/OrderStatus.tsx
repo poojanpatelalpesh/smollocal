@@ -115,10 +115,8 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
   };
 
   const handlePayClick = () => {
-    console.log('Redirecting to payment...');
-    // You can add payment loading state here if needed
-    // setIsLoading(true);
-    // setLoadingText('Redirecting to payment gateway...');
+    console.log('Navigating to QR page...');
+    navigate('/QR');
   };
 
   // Navigation handlers for cancelled orders
@@ -359,7 +357,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                     <ShoppingCart className="nav-button-icon" />
                     Return to Cart
                   </button>
-                </div>
+                  </div>
               </div>
             </>
           )}

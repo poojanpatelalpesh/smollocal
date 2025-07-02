@@ -6,6 +6,7 @@ import { CartProvider } from './context/CartContext';
 import LandingPage from './pages/Landing';
 import CheckoutPage from './pages/CheckOut';
 import OrderStatus from './pages/OrderStatus'; 
+import QR from './pages/QR'; // Add this import
 import CartModal from './components/CartModal';
 
 function App() {
@@ -36,6 +37,8 @@ function App() {
               path="/checkout"
               element={<CheckoutPage openCartSlider={openCartSlider} />}
             />
+            {/* QR route - standalone without header/footer */}
+            <Route path="/qr" element={<QR />} />
             <Route
               path="*"
               element={

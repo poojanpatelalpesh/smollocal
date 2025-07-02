@@ -22,27 +22,21 @@
   display: flex; 
   align-items: center;
   justify-content: space-between;
-  padding: 0 3rem 0 0 !important;
-  width: 100%;
+  padding: 1rem 3rem 1rem 0 !important;
+  min-height: 140px; /* Set minimum height for header */
 }
 
 .logo {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #4f46e5;
-  margin: 0;
-  padding: 0;
+  margin-left: 2rem; /* Shift logo to the right */
 }
 
 .logo-image {
-  height: 800px;
-  width: 200px;
+  height: 150px; /* Increased height to match header */
+  width: 350px; /* Increased width proportionally */
   max-width: 100%;
   margin: 0;
   padding: 0;
+  object-fit: contain; /* Ensures proper scaling */
 }
 
 .nav-links {
@@ -113,17 +107,22 @@ body {
 /* Tablet Styles */
 @media (max-width: 1024px) {
   .header-content {
-    padding: 0 2rem 0 0 !important;
+    padding: 0.75rem 2rem 0.75rem 0 !important;
+    min-height: 100px; /* Reduced height for tablet */
   }
   
   .nav-links {
     gap: 1.5rem;
   }
   
+  .logo {
+    margin-left: 1.5rem; /* Reduced margin for tablet */
+  }
+  
   .logo-image {
     object-fit: contain;
-    height: 55px;
-    width: 180px;
+    height: 90px; /* Increased from 80px */
+    width: 250px; /* Increased from 220px */
   }
 }
 
@@ -134,26 +133,36 @@ body {
   }
   
   .header-content {
-    padding: 0 1rem 0 0 !important;
+    padding: 0.5rem 1rem 0.5rem 0 !important;
+    min-height: 80px; /* Set height for mobile */
+  }
+  
+  .logo {
+    margin-left: 1rem; /* Reduced margin for mobile */
   }
   
   .logo-image {
     object-fit: contain;
-    height: 45px;
-    width: 160px;
+    height: 70px; /* Increased from 65px */
+    width: 220px; /* Increased from 200px */
   }
 }
 
 /* Small Mobile Styles */
 @media (max-width: 480px) {
   .header-content {
-    padding: 0 0.5rem 0 0 !important;
+    padding: 0.5rem 0.5rem 0.5rem 0 !important;
+    min-height: 70px; /* Set height for small mobile */
+  }
+  
+  .logo {
+    margin-left: 0.5rem; /* Small margin for small mobile */
   }
   
   .logo-image {
     object-fit: contain;
-    height: 65px;
-    width: 150px;
+    height: 60px; /* Increased from 55px */
+    width: 190px; /* Increased from 180px */
   }
   
   .cart-button {
