@@ -5,6 +5,38 @@
   gap: 1rem;
 }
 
+.signup-page-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.back-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: black;
+}
+
+
 .signup-field {
   margin-bottom: 1rem;
 }

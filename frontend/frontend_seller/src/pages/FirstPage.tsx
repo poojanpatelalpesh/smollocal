@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import './FirstPage.css';
 import './AboutUs.css';
@@ -6,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Overview from './Overview'; 
 import Price from './Price';
 import FirstPage_Image from '../assets/13.jpg';
+import OurLogo from '../assets/Our-Logo.png';
+import { MdEmail , MdPhone } from 'react-icons/md';
 
 const FirstPage: React.FC = () => {
   const navigate = useNavigate();
@@ -27,21 +28,19 @@ const FirstPage: React.FC = () => {
     const offset = 64; // height of navbar
     let targetPosition = 0;
     if (sectionId === 'home' && homeRef.current) {
-    targetPosition = homeRef.current.offsetTop - offset;
+      targetPosition = homeRef.current.offsetTop - offset;
     } else if (sectionId === 'overview' && overviewRef.current) {
-    targetPosition = overviewRef.current.offsetTop - offset;
+      targetPosition = overviewRef.current.offsetTop - offset;
     } else if (sectionId === 'about' && aboutRef.current) {
-    targetPosition = aboutRef.current.offsetTop - offset;
-    }
-    else if (sectionId === 'price' && priceRef.current) {
-    targetPosition = priceRef.current.offsetTop - offset;
+      targetPosition = aboutRef.current.offsetTop - offset;
+    } else if (sectionId === 'price' && priceRef.current) {
+      targetPosition = priceRef.current.offsetTop - offset;
     }
 
     window.scrollTo({
-    top: targetPosition,
-    behavior: 'smooth',
+      top: targetPosition,
+      behavior: 'smooth',
     });
-
   };
 
   useEffect(() => {
@@ -66,8 +65,7 @@ const FirstPage: React.FC = () => {
         setActiveSection('overview');
       } else if (scrollPosition >= aboutTop && scrollPosition < aboutTop + aboutHeight) {
         setActiveSection('about');
-      }
-      else if (scrollPosition >= priceTop && scrollPosition < priceTop + priceHeight) {
+      } else if (scrollPosition >= priceTop && scrollPosition < priceTop + priceHeight) {
         setActiveSection('price');
       }
     };
@@ -81,7 +79,7 @@ const FirstPage: React.FC = () => {
       {/* Header */}
       <header className="header">
         <div className="logo">
-          <h1>smo ocal</h1>
+          <img src={OurLogo} alt="Smollocal Logo" />
         </div>
 
         <nav className="navigation">
@@ -99,9 +97,9 @@ const FirstPage: React.FC = () => {
       {/* Home/Main Section */}
       <main className="main-content" ref={homeRef} id="home">
         <div className="content-wrapper">
-          <h4 className="main-title">
+          <h1 className="main-title">
             One place, full pace your business, your space.
-          </h4>
+          </h1>
 
           <div className="description">
             <p>Send personalized messages to loyal buyers.</p>
@@ -109,12 +107,12 @@ const FirstPage: React.FC = () => {
           </div>
 
           <div className="button-group">
-            <button className="lets-begin" onClick={handleSignupClick}>Let's begin</button>
+            <button className="lets-begin" onClick={handleSignupClick}>Let's Begin</button>
           </div>
         </div>
 
         <div className="image-wrapper">
-          <img src={FirstPage_Image} alt="Business illustration" className="main-image" />
+          <img src={FirstPage_Image} alt="Business illustration showing people managing their online business" className="main-image" />
         </div>
       </main>
 
@@ -142,8 +140,12 @@ const FirstPage: React.FC = () => {
               </div>
               <h3 className="member-name">Poojan Patel</h3>
               <div className="contact-icons">
-                <div className="contact-icon email-icon"></div>
-                <div className="contact-icon phone-icon"></div>
+                <div className="contact-icon email-icon">
+                  <MdEmail size={20} color="white" />
+                </div>
+                <div className="contact-icon phone-icon">
+                  <MdPhone size={20} color="white" />
+                </div>
               </div>
             </div>
 
@@ -159,8 +161,12 @@ const FirstPage: React.FC = () => {
               </div>
               <h3 className="member-name">Raman Pareek</h3>
               <div className="contact-icons">
-                <div className="contact-icon email-icon"></div>
-                <div className="contact-icon phone-icon"></div>
+                <div className="contact-icon email-icon">
+                  <MdEmail size={20} color="white" />
+                </div>
+                <div className="contact-icon phone-icon">
+                  <MdPhone size={20} color="white" />
+                </div>
               </div>
             </div>
           </div>
@@ -172,11 +178,15 @@ const FirstPage: React.FC = () => {
             <div className="footer-left">
               <div className="footer-contact">
                 <div className="contact-item">
-                  <span className="contact-icon-footer email"></span>
+                  <span className="contact-icon-footer email">
+                    <MdEmail size={20} color="white" />
+                  </span>
                   <span>xyz@gmail.com</span>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon-footer phone"></span>
+                  <span className="contact-icon-footer phone">
+                    <MdPhone size={20} color="white" />
+                  </span>
                   <span>+91 9999 99999</span>
                 </div>
               </div>
@@ -184,7 +194,7 @@ const FirstPage: React.FC = () => {
 
             <div className="footer-center">
               <div className="footer-logo">
-                {/* Logo */}
+                <img src={OurLogo} alt="Smollocal Logo" />
               </div>
             </div>
 

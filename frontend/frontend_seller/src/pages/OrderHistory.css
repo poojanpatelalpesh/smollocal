@@ -52,37 +52,6 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-/* Status Filter Controls */
-.status-filter-controls {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.status-filter-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid #E5E7EB;
-  background-color: white;
-  color: #6B7280;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.status-filter-btn:hover {
-  background-color: #F9FAFB;
-  border-color: #D1D5DB;
-}
-
-.status-filter-btn.active {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
 .loading-state {
   display: flex;
   justify-content: center;
@@ -96,36 +65,6 @@
 .loading-state p {
   color: var(--text-secondary);
   font-size: 1.125rem;
-}
-
-.error-state {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  color: #DC2626;
-  text-align: center;
-}
-
-.retry-btn {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.retry-btn:hover {
-  background-color: #1D4ED8;
 }
 
 @media (max-width: 640px) {
@@ -143,15 +82,5 @@
     width: 100%;
     max-width: none;
     margin-left: 0;
-  }
-
-  .status-filter-controls {
-    justify-content: center;
-  }
-
-  .status-filter-btn {
-    flex: 1;
-    min-width: 120px;
-    text-align: center;
   }
 }

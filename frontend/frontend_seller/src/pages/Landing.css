@@ -46,26 +46,6 @@ a:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.welcome-text {
-  font-size: 16px;
-  color: #666;
-  font-weight: 500;
-}
-
 .dashboard-header h1 {
   font-size: 28px;
   font-weight: 600;
@@ -82,22 +62,24 @@ a:active {
 /* Grid Layout */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 40px;
   max-width: 1600px;
   margin: 0 auto;
   height: 100%;
 }
 
-/* Top Row - Business, Add Category, Add Customer, Store QR */
-.top-row {
+/* First Row Container */
+.first-row {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 40px;
 }
 
-/* Bottom Row - Pending Orders, Completed Orders, Notify Customers */
-.bottom-row {
+/* Second Row Container */
+.second-row {
+  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
@@ -149,7 +131,7 @@ a:active {
 
 .main-image {
   background-color: white;
-  width: 100%;
+  width: 100%  !important;
   height: 100%;
   object-fit: cover;
   border-radius: 10px;

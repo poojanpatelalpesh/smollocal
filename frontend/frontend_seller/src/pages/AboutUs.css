@@ -312,6 +312,9 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .contact-icon:hover {
@@ -319,25 +322,8 @@ body {
   transform: translateY(-2px);
 }
 
-.email-icon:after {
-  content: '✉';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 1.2rem;
-}
-
-.phone-icon:after {
-  content: '📞';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 1.2rem;
-}
+/* Remove the old pseudo-element styles for icons */
+/* .email-icon:after and .phone-icon:after styles are no longer needed */
 
 /* Footer */
 .footer {
@@ -371,18 +357,13 @@ body {
 .contact-icon-footer {
   width: 20px;
   height: 20px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.contact-icon-footer.email:after {
-  content: '✉';
-  color: white;
-}
-
-.contact-icon-footer.phone:after {
-  content: '📞';
-  color: white;
-}
+/* Remove the old pseudo-element styles for footer icons */
+/* .contact-icon-footer.email:after and .contact-icon-footer.phone:after styles are no longer needed */
 
 .footer-center {
   display: flex;
@@ -391,8 +372,8 @@ body {
 }
 
 .footer-logo {
-  background: white;
-  padding: 1rem 2rem;
+  /* background: white; */
+  /* padding: 1rem 2rem; */
   border-radius: 25px;
   font-size: 1.5rem;
   font-weight: bold;

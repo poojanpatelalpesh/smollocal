@@ -1,20 +1,20 @@
 import React from 'react';
 import OrderCard from './OrderCard';
-import { Order } from '../services/api';
+import { Order } from '../types/models';
 import './OrderList.css';
 
 interface OrderListProps {
   orders: Order[];
-  onAcceptOrder: (id: string) => void;
-  onCancelOrder: (id: string) => void;
-  onSendMessage: (id: string, message: string) => void;
+  onAcceptOrder: (uuid: string) => void;
+  onCancelOrder: (uuid: string) => void;
+  onSendMessage: (uuid: string, message: string) => void;
 }
 
-const OrderList: React.FC<OrderListProps> = ({ 
-  orders, 
-  onAcceptOrder, 
+const OrderList: React.FC<OrderListProps> = ({
+  orders,
+  onAcceptOrder,
   onCancelOrder,
-  onSendMessage
+  onSendMessage,
 }) => {
   if (orders.length === 0) {
     return (
@@ -28,11 +28,11 @@ const OrderList: React.FC<OrderListProps> = ({
     <div className="order-list">
       {orders.map((order) => (
         <OrderCard
-          key={order._id}
+          key={order.uuid}
           order={order}
-          onAccept={onAcceptOrder}
-          onCancel={onCancelOrder}
-          onSendMessage={onSendMessage}
+          onAccept={() => onAcceptOrder(order.uuid)}
+          onCancel={() => onCancelOrder(order.uuid)}
+          onSendMessage={(message) => onSendMessage(order.uuid, message)}
         />
       ))}
     </div>

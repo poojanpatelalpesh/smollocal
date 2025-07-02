@@ -8,7 +8,7 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* Small gap between arrow and title */
+  gap: 5rem; /* Small gap between arrow and title */
   padding: 1rem 2rem; /* Add some padding around the header */
 }
 
@@ -390,5 +390,57 @@
   
   .form-buttons {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+  }
+
+  .form-header h2,
+
+  .form-header{
+    padding-top: 17px ;
+    height: 80px;
+  }
+  .customers-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.25rem;
+  }
+
+  .customer-card {
+    padding: 1rem;
+  }
+
+  .customer-name,
+  .customer-phone,
+  .customer-address {
+    font-size: 0.8rem;
+  }
+
+  .empty-state p {
+    font-size: 1rem;
+  }
+
+  .empty-subtitle {
+    font-size: 0.8rem;
   }
 }

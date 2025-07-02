@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Edit, Trash2, User, Phone, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ConfirmModal from '../components/ConfirmModal';
-import Notification from '../components/Notification';
 import './CustomerPage.css';
 
 interface Customer {
@@ -18,33 +16,8 @@ const CustomerPage: React.FC = () => {
     phone: '',
   });
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; customerId: number | null; customerName: string }>({
-    isOpen: false,
-    customerId: null,
-    customerName: ''
-  });
-  const [notification, setNotification] = useState<{
-    isOpen: boolean;
-    type: 'success' | 'error' | 'warning' | 'info';
-    title: string;
-    message?: string;
-  }>({
-    isOpen: false,
-    type: 'info',
-    title: '',
-    message: ''
-  });
 
   const navigate = useNavigate();
-
-  const showNotification = (type: 'success' | 'error' | 'warning' | 'info', title: string, message?: string) => {
-    setNotification({
-      isOpen: true,
-      type,
-      title,
-      message
-    });
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -61,13 +34,13 @@ const CustomerPage: React.FC = () => {
     const trimmedPhone = formData.phone.trim();
 
     if (!trimmedName || !trimmedPhone) {
-      showNotification('warning', 'Validation Error', 'Please fill in all fields');
+      alert('Please fill in all fields');
       return;
     }
 
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(trimmedPhone)) {
-      showNotification('warning', 'Invalid Phone Number', 'Phone number must be exactly 10 digits');
+      alert('Phone number must be exactly 10 digits');
       return;
     }
 
@@ -80,7 +53,6 @@ const CustomerPage: React.FC = () => {
         )
       );
       setEditingId(null);
-      showNotification('success', 'Customer Updated', `${trimmedName} has been updated successfully!`);
     } else {
       const newCustomer: Customer = {
         id: Date.now(),
@@ -88,7 +60,6 @@ const CustomerPage: React.FC = () => {
         phone: trimmedPhone
       };
       setCustomers(prev => [...prev, newCustomer]);
-      showNotification('success', 'Customer Added', `${trimmedName} has been added successfully!`);
     }
 
     setFormData({ name: '', phone: '' });
@@ -103,17 +74,9 @@ const CustomerPage: React.FC = () => {
   };
 
   const handleDelete = (id: number) => {
-    setCustomers(prev => prev.filter(customer => customer.id !== id));
-    setDeleteModal({ isOpen: false, customerId: null, customerName: '' });
-    showNotification('success', 'Customer Deleted', 'Customer has been deleted successfully!');
-  };
-
-  const openDeleteModal = (customer: Customer) => {
-    setDeleteModal({
-      isOpen: true,
-      customerId: customer.id,
-      customerName: customer.name
-    });
+    if (window.confirm('Are you sure you want to delete this customer?')) {
+      setCustomers(prev => prev.filter(customer => customer.id !== id));
+    }
   };
 
   const handleCancel = () => {
@@ -125,7 +88,7 @@ const CustomerPage: React.FC = () => {
     <div className="customer-page">
       <div className="header">
         <h1 className="dashboard-title">
-        <button className="back-button" onClick={() => navigate('/Landing')}>
+        <button className="back-button" onClick={() => navigate(-1)}>
         <ArrowLeft size={30} />
         </button>
         Customer details
@@ -222,7 +185,7 @@ const CustomerPage: React.FC = () => {
                       <Edit size={16} />
                     </button>
                     <button
-                      onClick={() => openDeleteModal(customer)}
+                      onClick={() => handleDelete(customer.id)}
                       className="action-btn delete-btn"
                       title="Delete customer"
                     >
@@ -235,25 +198,6 @@ const CustomerPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <ConfirmModal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, customerId: null, customerName: '' })}
-        onConfirm={() => deleteModal.customerId && handleDelete(deleteModal.customerId)}
-        title="Delete Customer"
-        message={`Are you sure you want to delete "${deleteModal.customerName}"? This action cannot be undone.`}
-        type="danger"
-        confirmText="Delete Customer"
-        cancelText="Cancel"
-      />
-
-      <Notification
-        isOpen={notification.isOpen}
-        onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
-        type={notification.type}
-        title={notification.title}
-        message={notification.message}
-      />
     </div>
   );
 };

@@ -36,7 +36,7 @@ const MessageAll: React.FC<MessageAllProps> = ({ totalCustomers = 0 }) => {
       <div className="message-all-header">
         <div className="header-content">
           <div className="header-with-back">
-            <button className="back-button" onClick={() => navigate('/Landing')}>
+            <button className="back-button" onClick={() => navigate(-1)}>
               <ArrowLeft size={30} />
             </button>
             <h1>MESSAGE ALL CUSTOMERS</h1>

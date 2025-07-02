@@ -231,7 +231,9 @@
   .order-actions-container {
     flex: 1;
     min-width: 100%;
-    padding: 1rem 0;
+    padding: 1.5rem;
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
   }
 
   .order-actions {
@@ -262,12 +264,16 @@
     font-size: 1rem;
   }
 
+  /* ✅ UPDATED: Keep product items inline on mobile */
   .product-item {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Remove flex-direction: column and align-items: flex-start */
   }
 
   .product-quantity {
-    margin-top: 4px;
+    /* Remove margin-top: 4px to keep it inline */
+    margin-top: 0;
   }
 }
