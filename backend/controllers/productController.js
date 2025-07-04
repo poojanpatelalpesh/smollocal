@@ -107,3 +107,19 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Public: Get products by seller slug
+exports.getProductsBySellerSlug = async (req, res) => {
+  try {
+    const { sellerSlug } = req.params;
+    const Seller = require('../models/Seller');
+    const seller = await Seller.findOne({ slug: sellerSlug });
+    if (!seller) {
+      return res.status(404).json({ error: 'Seller not found' });
+    }
+    const products = await Product.find({ seller: seller._id });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

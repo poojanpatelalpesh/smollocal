@@ -8,6 +8,9 @@ import CheckoutPage from './pages/CheckOut';
 import OrderStatus from './pages/OrderStatus'; 
 import QR from './pages/QR'; // Add this import
 import CartModal from './components/CartModal';
+import StorePage from './pages/StorePage';
+import PlaceOrder from './pages/PlaceOrder';
+import CustomerLayout from './components/CustomerLayout';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -33,27 +36,15 @@ function App() {
           <CartModal isOpen={isCartOpen} onClose={closeCartSlider} />
           
           <Routes>
-            <Route
-              path="/checkout"
-              element={<CheckoutPage openCartSlider={openCartSlider} />}
-            />
-            {/* QR route - standalone without header/footer */}
             <Route path="/qr" element={<QR />} />
-            <Route
-              path="*"
-              element={
-                <>
-                  <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-                  <main>
-                    <Routes>
-                      <Route path="/" element={<LandingPage />} />
-                      <Route path="/order-status" element={<OrderStatus openCartSlider={openCartSlider} />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </>
-              }
-            />
+            <Route element={<CustomerLayout />}>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/store/:sellerSlug" element={<StorePage />} />
+              <Route path="/store/:sellerSlug/checkout" element={<CheckoutPage />} />
+              <Route path="/store/:sellerSlug/placeorder" element={<PlaceOrder />} />
+              <Route path="/order-status" element={<OrderStatus />} />
+              <Route path="/store/:sellerSlug/order-status/:orderId" element={<OrderStatus />} />
+            </Route>
           </Routes>
         </div>
       </Router>

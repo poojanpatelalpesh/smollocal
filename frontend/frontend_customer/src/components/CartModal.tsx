@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, matchPath } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../styles/cart.css';
 
@@ -10,13 +10,25 @@ type CartModalProps = {
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { items, addToCart, removeFromCart, clearCart, getCartTotal } = useCart();
+
+  // Try to extract sellerSlug from the current path
+  let sellerSlug = '';
+  const match = matchPath('/store/:sellerSlug', location.pathname);
+  if (match && match.params && match.params.sellerSlug) {
+    sellerSlug = match.params.sellerSlug;
+  }
 
   if (!isOpen) return null;
 
   const handleCheckout = () => {
     onClose();
-    navigate('/checkout');
+    if (sellerSlug) {
+      navigate(`/store/${sellerSlug}/checkout`);
+    } else {
+      navigate('/checkout'); // fallback
+    }
   };
 
   return (

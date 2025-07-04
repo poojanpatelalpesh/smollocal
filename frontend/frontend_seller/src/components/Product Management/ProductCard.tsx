@@ -29,9 +29,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className="product-card">
       <div className="product-card-image-container">
-        {product.image ? (
+        {product.imageUrl ? (
           <img
-            src={product.image}
+            src={product.imageUrl}
             alt={product.name}
             className="product-card-image"
           />
@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete(product.id);
+              onDelete(product._id);
             }}
             className="product-card-action-btn delete"
             title="Delete product"

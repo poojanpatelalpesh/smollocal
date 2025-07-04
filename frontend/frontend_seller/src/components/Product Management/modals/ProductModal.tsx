@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Upload, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, ImageIcon } from 'lucide-react';
 import { Product, ProductFormData } from '../types/types';
 import './ProductModal.css';
 
@@ -9,22 +9,24 @@ interface ProductModalProps {
   onSubmit: (data: ProductFormData) => void;
   product?: Product;
   title: string;
+  isLoading?: boolean;
 }
 
-export const ProductModal: React.FC<ProductModalProps> = ({
+const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
   product,
   title,
+  isLoading = false,
 }) => {
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     description: '',
-    image: '',
-    price: '',
+    price: 0,
   });
   const [preview, setPreview] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -32,28 +34,28 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       setFormData({
         name: product.name,
         description: product.description,
-        image: product.image,
         price: product.price,
       });
-      setPreview(product.image);
+      setPreview(product.imageUrl);
+      setSelectedFile(null);
     } else {
       setFormData({
         name: '',
         description: '',
-        image: '',
-        price: '',
+        price: 0,
       });
       setPreview('');
+      setSelectedFile(null);
     }
   }, [product, isOpen]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
-        setFormData({ ...formData, image: result });
         setPreview(result);
       };
       reader.readAsDataURL(file);
@@ -62,15 +64,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const { name, description, image, price } = formData;
-    if (!name.trim() || !description.trim() || !image.trim() || !price.trim()) {
-      alert('Please fill in all fields.');
-      return;
+    if (formData.name.trim() && !isLoading) {
+      const submitData = {
+        ...formData,
+        image: selectedFile || undefined,
+      };
+      onSubmit(submitData);
     }
-
-    onSubmit(formData);
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -80,7 +80,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       <div className="product-modal">
         <div className="product-modal-header">
           <h2 className="product-modal-title">{title}</h2>
-          <button onClick={onClose} className="product-modal-close-btn">
+          <button 
+            onClick={onClose} 
+            className="product-modal-close-btn"
+            disabled={isLoading}
+          >
             <X />
           </button>
         </div>
@@ -89,8 +93,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           <div className="product-modal-field">
             <label className="product-modal-label">Product Image *</label>
             <div
-              onClick={() => fileInputRef.current?.click()}
-              className={`product-modal-upload-area ${preview ? 'has-image' : ''}`}
+              onClick={() => !isLoading && fileInputRef.current?.click()}
+              className={`product-modal-upload-area ${preview ? 'has-image' : ''} ${isLoading ? 'disabled' : ''}`}
             >
               {preview ? (
                 <div className="product-modal-upload-preview">
@@ -117,6 +121,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               accept="image/*"
               onChange={handleImageUpload}
               className="product-modal-upload-input"
+              disabled={isLoading}
             />
           </div>
 
@@ -132,6 +137,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               className="product-modal-input"
               placeholder="Enter product name"
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -140,15 +146,16 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               Price *
             </label>
             <input
-              type="text"
+              type="number"
               id="price"
               value={formData.price}
               onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
+                setFormData({ ...formData, price: Number(e.target.value) })
               }
               className="product-modal-input"
               placeholder="Enter product price"
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -166,7 +173,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               maxLength={200}
               className="product-modal-textarea"
               placeholder="Enter product description"
-              required
+              disabled={isLoading}
             />
             {/* <div className="product-modal-char-count">
               {formData.description.length} / 200
@@ -178,11 +185,16 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               type="button"
               onClick={onClose}
               className="product-modal-cancel-btn"
+              disabled={isLoading}
             >
               Cancel
             </button>
-            <button type="submit" className="product-modal-submit-btn">
-              {product ? 'Update' : 'Create'}
+            <button 
+              type="submit" 
+              className="product-modal-submit-btn"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Saving...' : 'Save Product'}
             </button>
           </div>
         </form>
@@ -190,3 +202,5 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     </div>
   );
 };
+
+export default ProductModal;

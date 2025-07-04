@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, ArrowLeft } from 'lucide-react';
 import { Category, Product, ProductFormData } from './types/types';
 import { ProductCard } from './ProductCard';
-import { ProductModal } from './modals/ProductModal';
-import { createProduct, updateProduct } from './utils/storage';
+import ProductModal  from './modals/ProductModal';
+import ConfirmModal from '../ConfirmModal';
+import Notification from '../Notification';
+import { useAuth } from '../../context/AuthContext';
+import { productsAPI } from '../../services/api';
 import './ProductManager.css';
 
 interface ProductManagerProps {
@@ -19,77 +22,120 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
   onUpdateProducts,
   onBack,
 }) => {
+  const { token } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
-  const [screenSize, setScreenSize] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-  const [isMobileView, setIsMobileView] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: string | null; productName: string }>({
+    isOpen: false,
+    productId: null,
+    productName: ''
+  });
+  const [notification, setNotification] = useState<{
+    isOpen: boolean;
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message?: string;
+  }>({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
+  });
 
-  // Detect screen size changes
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setScreenSize('mobile');
-        setIsMobileView(true);
-      } else if (width < 1024) {
-        setScreenSize('tablet');
-        setIsMobileView(false);
-      } else {
-        setScreenSize('desktop');
-        setIsMobileView(false);
+  const showNotification = (type: 'success' | 'error' | 'warning' | 'info', title: string, message?: string) => {
+    setNotification({
+      isOpen: true,
+      type,
+      title,
+      message
+    });
+  };
+
+  const handleCreateProduct = async (data: ProductFormData) => {
+    if (!token) return;
+    
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('description', data.description);
+      formData.append('price', data.price.toString());
+      formData.append('category', category._id);
+      
+      if (data.image) {
+        formData.append('image', data.image);
       }
-    };
 
-    handleResize(); // Initial check
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Get grid configuration based on screen size
-  const getGridConfig = () => {
-    switch (screenSize) {
-      case 'mobile':
-        return {
-          columns: window.innerWidth < 480 ? 1 : 2,
-          maxItems: window.innerWidth < 480 ? 4 : 6,
-          itemHeight: window.innerWidth < 380 ? 260 : 300
-        };
-      case 'tablet':
-        return {
-          columns: 2,
-          maxItems: 6,
-          itemHeight: 350
-        };
-      default:
-        return {
-          columns: 4,
-          maxItems: 8,
-          itemHeight: 400
-        };
+      const newProduct = await productsAPI.create(token, formData);
+      onUpdateProducts([...products, newProduct]);
+      setIsModalOpen(false);
+      showNotification('success', 'Product Created', `${data.name} has been created successfully!`);
+    } catch (error) {
+      console.error('Error creating product:', error);
+      showNotification('error', 'Creation Failed', 'Failed to create product. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleCreateProduct = (data: ProductFormData) => {
-    const newProduct = createProduct(category.id, data.name, data.description, data.image);
-    // Using in-memory state instead of localStorage for Claude.ai compatibility
-    const updatedProducts = [...products, newProduct];
-    onUpdateProducts(updatedProducts);
-  };
+  const handleEditProduct = async (data: ProductFormData) => {
+    if (!token || !editingProduct) return;
+    
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('description', data.description);
+      formData.append('price', data.price.toString());
+      formData.append('category', category._id);
+      
+      if (data.image) {
+        formData.append('image', data.image);
+      }
 
-  const handleEditProduct = (data: ProductFormData) => {
-    if (editingProduct) {
-      const updatedProduct = updateProduct(editingProduct, data);
+      const updatedProduct = await productsAPI.update(token, editingProduct._id, formData);
       const updatedProducts = products.map((prod: Product) =>
-        prod.id === editingProduct.id ? updatedProduct : prod
+        prod._id === editingProduct._id ? updatedProduct : prod
       );
       onUpdateProducts(updatedProducts);
+      setIsModalOpen(false);
+      showNotification('success', 'Product Updated', `${data.name} has been updated successfully!`);
+    } catch (error) {
+      console.error('Error updating product:', error);
+      showNotification('error', 'Update Failed', 'Failed to update product. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDeleteProduct = (productId: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      const filteredProducts = products.filter((prod: Product) => prod.id !== productId);
+  const handleDeleteProduct = async (productId: string) => {
+    if (!token) return;
+    
+    try {
+      await productsAPI.delete(token, productId);
+      const filteredProducts = products.filter((prod: Product) => prod._id !== productId);
       onUpdateProducts(filteredProducts);
+      setDeleteModal({ isOpen: false, productId: null, productName: '' });
+      showNotification('success', 'Product Deleted', 'Product has been deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      showNotification('error', 'Deletion Failed', 'Failed to delete product. Please try again.');
+    }
+  };
+
+  const openDeleteModal = (product: Product) => {
+    setDeleteModal({
+      isOpen: true,
+      productId: product._id,
+      productName: product.name
+    });
+  };
+
+  const handleDeleteClick = (productId: string) => {
+    const product = products.find(p => p._id === productId);
+    if (product) {
+      openDeleteModal(product);
     }
   };
 
@@ -103,80 +149,56 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
     setIsModalOpen(true);
   };
 
-  const gridConfig = getGridConfig();
-
   return (
     <div className="product-manager">
       <div className="product-manager-container">
-        <div className={`product-manager-header ${isMobileView ? 'mobile-header' : ''}`}>
-          <button
-            onClick={onBack}
-            className="product-manager-back-btn"
-            aria-label="Go back"
-          >
-            <ArrowLeft />
-          </button>
-          
+        <div className="product-manager-header">
           <div className="product-manager-title-section">
+            <button
+              onClick={onBack}
+              className="product-manager-back-btn"
+            >
+              <ArrowLeft />
+            </button>
             <div>
               <h1>{category.name}</h1>
             </div>
           </div>
-          
           <button
             onClick={openCreateModal}
             className="product-manager-add-btn"
-            aria-label="Add new product"
+            disabled={isLoading}
           >
             <Plus />
-            <span>{isMobileView ? 'Add' : 'Add Product'}</span>
+            <span>Add Product</span>
           </button>
         </div>
 
-        {products.length === 0 ? (
-          <div className="product-manager-empty">
-            <div className="product-manager-empty-card">
-              <h2>No Products Yet</h2>
-              <p>
-                {isMobileView 
-                  ? `Add your first product to ${category.name}` 
-                  : `Add your first product to this category to start your collection`
-                }
-              </p>
-              <button
-                onClick={openCreateModal}
-                className="product-manager-empty-btn"
-              >
-                Add Product
-              </button>
+        <div className="product-manager-grid">
+          {products.map((product) => (
+            <ProductCard
+              key={product._id}
+              product={product}
+              onEdit={openEditModal}
+              onDelete={handleDeleteClick}
+            />
+          ))}
+          
+          {/* Always show Add Product card */}
+          <div className="product-card create-product-card" onClick={openCreateModal}>
+            <div className="product-card-image-container">
+              <div className="product-card-placeholder">
+                <Plus />
+              </div>
+            </div>
+            <div className="product-card-content">
+              <div className="product-card-header">
+                <p className="product-card-title">Add Product</p>
+              </div>
+              <p className="product-card-description">Create a new product in this category</p>
             </div>
           </div>
-        ) : (
-          <div 
-            className={`product-manager-grid ${screenSize}-grid`}
-            style={{
-              gridTemplateColumns: `repeat(${gridConfig.columns}, 1fr)`,
-              maxHeight: `calc(${Math.ceil(gridConfig.maxItems / gridConfig.columns)} * (${gridConfig.itemHeight}px + 1rem))`,
-            }}
-          >
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onEdit={openEditModal}
-                onDelete={handleDeleteProduct}
-                isMobileView={isMobileView}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Show product count on mobile */}
-        {isMobileView && products.length > 0 && (
-          <div className="mobile-product-count">
-            {products.length} {products.length === 1 ? 'product' : 'products'} in {category.name}
-          </div>
-        )}
+        </div>
 
         <ProductModal
           isOpen={isModalOpen}
@@ -184,7 +206,27 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
           onSubmit={editingProduct ? handleEditProduct : handleCreateProduct}
           product={editingProduct}
           title={editingProduct ? 'Edit Product' : 'Add New Product'}
-          isMobileView={isMobileView}
+          isLoading={isLoading}
+        />
+
+        <ConfirmModal
+          isOpen={deleteModal.isOpen}
+          onClose={() => setDeleteModal({ isOpen: false, productId: null, productName: '' })}
+          onConfirm={() => deleteModal.productId && handleDeleteProduct(deleteModal.productId)}
+          title="Delete Product"
+          message={`Are you sure you want to delete "${deleteModal.productName}"? This action cannot be undone.`}
+          type="danger"
+          confirmText="Delete Product"
+          cancelText="Cancel"
+          isLoading={isLoading}
+        />
+
+        <Notification
+          isOpen={notification.isOpen}
+          onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
+          type={notification.type}
+          title={notification.title}
+          message={notification.message}
         />
       </div>
     </div>

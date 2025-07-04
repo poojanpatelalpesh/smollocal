@@ -1,4 +1,4 @@
-const Seller = require('../models/seller');
+const Seller = require('../models/Seller');
 const generateToken = require('../utils/generateTokes.js');
 const slugify = require('slugify');
 
@@ -66,7 +66,11 @@ exports.loginSeller = async (req, res) => {
       _id: seller._id,
       name: seller.name,
       email: seller.email,
-      token: generateToken(seller._id),
+      phone: seller.phone,
+      businessName: seller.businessName,
+      address: seller.address,
+      slug: seller.slug,
+      token: generateToken(seller._id)
     });
   } else {
     res.status(401).json({ message: 'Invalid credentials' });

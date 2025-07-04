@@ -50,10 +50,13 @@ export interface Order {
   _id: string;
   seller: string;
   products: Array<{
-    productId: string;
+    productId: string | Product | null;
     quantity: number;
   }>;
-  customer: Customer;
+  customer?: Customer;
+  customerName?: string;
+  customerPhone?: string;
+  customerAddress?: string;
   status: 'pending' | 'approved' | 'denied' | 'paid';
   denialReason?: string;
   createdAt: string;

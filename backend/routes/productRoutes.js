@@ -5,7 +5,8 @@ const {
   getAllProducts, 
   getProductById, 
   updateProduct, 
-  deleteProduct 
+  deleteProduct, 
+  getProductsBySellerSlug 
 } = require('../controllers/productController');
 const { protect } = require('../middleware/authMiddleware'); // use your existing protect middleware
 
@@ -20,5 +21,8 @@ router.route('/:id')
   .get(protect, getProductById)
   .put(protect, upload.single('image'), updateProduct)
   .delete(protect, deleteProduct);
+
+// Public route to get products by seller slug
+router.get('/public/:sellerSlug', getProductsBySellerSlug);
 
 module.exports = router;

@@ -9,6 +9,7 @@ interface CategoryModalProps {
   onSubmit: (data: CategoryFormData) => void;
   category?: Category;
   title: string;
+  isLoading?: boolean;
 }
 
 export const CategoryModal: React.FC<CategoryModalProps> = ({
@@ -17,31 +18,28 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
   onSubmit,
   category,
   title,
+  isLoading = false,
 }) => {
   const [formData, setFormData] = useState<CategoryFormData>({
     name: '',
-    // description: '',
   });
 
   useEffect(() => {
     if (category) {
       setFormData({
         name: category.name,
-        // description: category.description,
       });
     } else {
       setFormData({
         name: '',
-        // description: '',
       });
     }
   }, [category, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name.trim()) {
+    if (formData.name.trim() && !isLoading) {
       onSubmit(formData);
-      onClose();
     }
   };
 
@@ -55,6 +53,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
           <button
             onClick={onClose}
             className="category-modal-close-btn"
+            disabled={isLoading}
           >
             <X />
           </button>
@@ -73,38 +72,25 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               className="category-modal-input"
               placeholder="Enter category name"
               required
+              disabled={isLoading}
             />
           </div>
-
-          {/* 
-          <div className="category-modal-field">
-            <label htmlFor="description" className="category-modal-label">
-              Description
-            </label>
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
-              className="category-modal-textarea"
-              placeholder="Enter category description"
-            />
-          </div>
-          */}
 
           <div className="category-modal-actions">
             <button
               type="button"
               onClick={onClose}
               className="category-modal-cancel-btn"
+              disabled={isLoading}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="category-modal-submit-btn"
+              disabled={isLoading || !formData.name.trim()}
             >
-              {category ? 'Update' : 'Create'}
+              {isLoading ? 'Saving...' : (category ? 'Update' : 'Create')}
             </button>
           </div>
         </form>

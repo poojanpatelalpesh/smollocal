@@ -1,72 +1,24 @@
-import React, { useState, useEffect } from 'react';
+/// <reference types="vite/client" />
+
+import React, { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Package, CreditCard, Truck, MessageSquare, Loader2, Home, ShoppingCart, Banknote } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/orderstatus.css';
-import { useCart } from '../context/CartContext';
 
-interface OrderStatusProps {
-  openCartSlider: () => void;
-}
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
-const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
-  const location = useLocation();
+const OrderStatus: React.FC = () => {
+  const { sellerSlug, orderId } = useParams<{ sellerSlug: string; orderId: string }>();
   const navigate = useNavigate();
-
-  // Loading states
-  const [isLoading, setIsLoading] = useState(true);
+  const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [polling, setPolling] = useState(true);
   const [loadingText, setLoadingText] = useState('Processing your order...');
 
-  // Access state passed via navigation from checkout
-  const state = location.state as {
-    formData: {
-      firstName: string;
-      lastName: string;
-      streetAddress: string;
-      townCity: string;
-      phoneNumber: string;
-    };
-    paymentMethod: 'online' | 'cod';
-    cartItems: {
-      product: {
-        id: number;
-        name: string;
-        description?: string;
-        price: number;
-        image?: string;
-      };
-      quantity: number;
-    }[];
-    total: number;
-  } | undefined;
-
-  // If no state or invalid paymentMethod, show message and redirect option
-  if (!state || !['online', 'cod'].includes(state.paymentMethod)) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>This page is accessible only after completing checkout.</h2>
-        <button 
-          onClick={() => navigate('/')} 
-          style={{
-            marginTop: '1rem',
-            padding: '0.5rem 1rem',
-            cursor: 'pointer',
-            backgroundColor: '#4f46e5',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px'
-          }}
-        >
-          Go back to Home
-        </button>
-      </div>
-    );
-  }
-
-  const [orderStatus, setOrderStatus] = useState('approved');
-  const [sellerMessage, setSellerMessage] = useState('');
-
-  // Loading simulation with different messages
+  // Animated loading messages
   useEffect(() => {
+    if (!loading) return;
     const loadingMessages = [
       'Processing your order...',
       'Verifying order details...',
@@ -75,100 +27,62 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
       'Finalizing order status...',
       'Almost ready...'
     ];
-
     let messageIndex = 0;
+    setLoadingText(loadingMessages[0]);
     const messageInterval = setInterval(() => {
       if (messageIndex < loadingMessages.length - 1) {
         messageIndex++;
         setLoadingText(loadingMessages[messageIndex]);
       }
     }, 800);
+    return () => clearInterval(messageInterval);
+  }, [loading]);
 
-    // Simulate loading time (4-5 seconds)
-    const loadingTimeout = setTimeout(() => {
-      setIsLoading(false);
-      clearInterval(messageInterval);
-    }, 4000);
-
-    return () => {
-      clearTimeout(loadingTimeout);
-      clearInterval(messageInterval);
+  // Poll backend for order status
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    const fetchOrder = () => {
+      fetch(`${API_BASE}/api/orders/customer/${orderId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Order not found');
+          return res.json();
+        })
+        .then(data => {
+          setOrder(data);
+          setError(null);
+          setLoading(false);
+          if (data.status !== 'pending') {
+            setPolling(false);
+          }
+        })
+        .catch(err => {
+          setError(err.message || 'Error fetching order');
+          setLoading(false);
+        });
     };
-  }, []);
+    fetchOrder();
+    if (polling) {
+      interval = setInterval(fetchOrder, 2000);
+    }
+    return () => clearInterval(interval);
+  }, [orderId, polling]);
 
-  const orderData = {
-    orderId: '#ORD-2025-001234',
-    items: state.cartItems.map(item => ({
-      id: item.product.id,
-      name: item.product.name,
-      description: item.product.description || '',
-      price: item.product.price,
-      quantity: item.quantity,
-      image: item.product.image || '',
-    })),
-    subtotal: state.cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
-    shipping: 0,
-    tax: 0,
-    total: state.total,
-    paymentMethod: state.paymentMethod === 'online' ? 'Credit Card' : 'Cash on Delivery',
-    estimatedDelivery: '3-5 business days',
-  };
-
-  const handlePayClick = () => {
-    console.log('Navigating to QR page...');
-    navigate('/QR');
-  };
-
-  // Navigation handlers for cancelled orders
-  const handleReturnHome = () => {
-    navigate('/');
-  };
-
-  const handleReturnToCart = () => {
-    // Navigate back to cart with current cart items
-    navigate('/cart', { 
-      state: { 
-        cartItems: state.cartItems,
-        returnFromOrder: true 
-      } 
-    });
-    openCartSlider(); // Open the cart slider after navigation
-  };
-
-  // Toggle order status with loading simulation
-  const handleStatusToggle = (newStatus: string) => {
-    setIsLoading(true);
-    setLoadingText(`Updating order status to ${newStatus}...`);
-    
-    setTimeout(() => {
-      setOrderStatus(newStatus);
-      setIsLoading(false);
-    }, 1500);
-  };
-
-  // Loading Component
+  // Loading Component (from your design)
   const LoadingWindow = () => (
     <div className="loading-overlay">
       <div className="loading-container">
         <div className="loading-content">
-          {/* Animated Logo/Icon */}
           <div className="loading-icon-container">
             <div className="loading-icon-wrapper">
               <Package className="loading-package-icon" />
               <Loader2 className="loading-spinner" />
             </div>
           </div>
-          
-          {/* Loading Text */}
           <h2 className="loading-title">Please Wait</h2>
           <p className="loading-message">{loadingText}</p>
-          
-          {/* Progress Bar */}
           <div className="loading-progress">
             <div className="loading-progress-bar"></div>
           </div>
-          
-          {/* Loading Dots */}
           <div className="loading-dots">
             <span className="loading-dot"></span>
             <span className="loading-dot"></span>
@@ -179,43 +93,59 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
     </div>
   );
 
-  // Show loading screen
-  if (isLoading) {
-    return <LoadingWindow />;
-  }
+  if (loading) return <LoadingWindow />;
+  if (error) return <div style={{color:'red',textAlign:'center',marginTop:40}}>Error: {error}</div>;
+  if (!order) return <div style={{textAlign:'center',marginTop:40}}>Order not found.</div>;
+
+  // Build orderData for summary UI
+  const orderData = {
+    orderId: order._id,
+    items: order.products.map((item: any) => ({
+      id: item.productId?._id || item.productId?.id || '',
+      name: item.productId?.name || 'Product',
+      description: item.productId?.description || '',
+      price: item.productId?.price || 0,
+      quantity: item.quantity,
+      image: item.productId?.imageUrl || item.productId?.image || '',
+    })),
+    subtotal: order.products.reduce((sum: number, item: any) => sum + (item.productId?.price || 0) * item.quantity, 0),
+    shipping: 0,
+    tax: 0,
+    total: order.products.reduce((sum: number, item: any) => sum + (item.productId?.price || 0) * item.quantity, 0),
+    paymentMethod: 'N/A', // Not tracked in backend
+    estimatedDelivery: '3-5 business days',
+  };
+
+  // Navigation handlers
+  const handleReturnHome = () => {
+    navigate('/');
+  };
+  const handleReturnToCart = () => {
+    navigate('/store/' + sellerSlug);
+  };
 
   return (
     <div className="order-container">
-      {/* Demo Toggle - Remove in production */}
-      <div className="demo-toggle">
-        <button
-          onClick={() => handleStatusToggle('approved')}
-          className={`toggle-button ${orderStatus === 'approved' ? 'approved' : ''}`}
-        >
-          ✅ Approved State
-        </button>
-        <button
-          onClick={() => handleStatusToggle('cancelled')}
-          className={`toggle-button ${orderStatus === 'cancelled' ? 'cancelled' : ''}`}
-        >
-          ❌ Cancelled State
-        </button>
-      </div>
-
       <div className="order-wrapper">
         {/* Left Column - Main Order Content */}
         <div className="order-main-content">
           {/* Status Header */}
-          <div className={`status-header ${orderStatus === 'approved' ? 'status-approved' : 'status-cancelled'}`}>
+          <div className={`status-header ${order.status === 'approved' ? 'status-approved' : order.status === 'denied' ? 'status-cancelled' : ''}`}>
             <div className="status-header-content">
-              {orderStatus === 'approved' ? (
+              {order.status === 'approved' ? (
                 <CheckCircle className="status-icon" />
-              ) : (
+              ) : order.status === 'denied' ? (
                 <XCircle className="status-icon" />
+              ) : (
+                <Package className="status-icon" />
               )}
               <div>
                 <h2 className="status-title">
-                  {orderStatus === 'approved' ? 'Items Available! 🎉' : 'Order Cancelled 😔'}
+                  {order.status === 'approved'
+                    ? 'Items Available! 🎉'
+                    : order.status === 'denied'
+                    ? 'Order Cancelled 😔'
+                    : 'Order Pending...'}
                 </h2>
               </div>
             </div>
@@ -225,8 +155,12 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
           <div className="status-badge">
             <Package className="badge-icon" />
             <span className="badge-label">Order Status:</span>
-            <span className={`badge-status ${orderStatus === 'approved' ? 'approved' : 'cancelled'}`}>
-              {orderStatus === 'approved' ? '✅ Approved' : '❌ Cancelled'}
+            <span className={`badge-status ${order.status === 'approved' ? 'approved' : order.status === 'denied' ? 'cancelled' : ''}`}>
+              {order.status === 'approved'
+                ? '✅ Approved'
+                : order.status === 'denied'
+                ? '❌ Cancelled'
+                : '⏳ Pending'}
             </span>
           </div>
 
@@ -251,9 +185,6 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                     <div className="item-quantity-display">
                       <span className="quantity-label">Quantity:</span>
                       <span className="quantity-value">{item.quantity}</span>
-                      {orderStatus === 'approved' && (
-                        <span className="quantity-note"></span>
-                      )}
                     </div>
                   </div>
                   <div className="item-price">₹{item.price * item.quantity}</div>
@@ -263,74 +194,50 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
           </div>
 
           {/* Conditional Content */}
-          {orderStatus === 'approved' ? (
+          {order.status === 'approved' ? (
             <>
-              {/* Payment Section for Online Payment */}
-              {state.paymentMethod === 'online' && (
-                <div className="payment-section">
-                  <div className="payment-card">
-                    <div className="payment-details">
-                      <div className="payment-icon-container">
-                        <CreditCard className="payment-icon" />
-                      </div>
-                      <div>
-                        <h3 className="payment-title">Complete Your Payment</h3>
+              <div className="cod-section">
+                <div className="cod-card">
+                  <div className="cod-details">
+                    <div className="cod-icon-container">
+                      <Banknote className="cod-icon" />
+                    </div>
+                    <div className="cod-info">
+                      <h3 className="cod-title">Order Confirmed</h3>
+                      <p className="cod-description">
+                        Your order has been confirmed! Our team will prepare your items for delivery.
+                      </p>
+                      <div className="cod-delivery-info">
+                        <Truck className="cod-delivery-icon" />
+                        <span>Estimated delivery: {orderData.estimatedDelivery}</span>
                       </div>
                     </div>
-                    <button onClick={handlePayClick} className="payment-button">
-                      Pay Now 
-                    </button>
+                  </div>
+                  <div className="cod-amount">
+                    <span className="cod-amount-label">Total:</span>
+                    <span className="cod-amount-value">₹{orderData.total}</span>
                   </div>
                 </div>
-              )}
-
-              {/* COD Confirmation Section */}
-              {state.paymentMethod === 'cod' && (
-                <div className="cod-section">
-                  <div className="cod-card">
-                    <div className="cod-details">
-                      <div className="cod-icon-container">
-                        <Banknote className="cod-icon" />
-                      </div>
-                      <div className="cod-info">
-                        <h3 className="cod-title">Cash on Delivery Confirmed</h3>
-                        <p className="cod-description">
-                          Your order has been confirmed! Pay with cash when your items are delivered.
-                        </p>
-                        <div className="cod-delivery-info">
-                          <Truck className="cod-delivery-icon" />
-                          <span>Estimated delivery: {orderData.estimatedDelivery}</span>
-                        </div>
-                      </div>
+                <div className="order-tracking-info">
+                  <h4 className="tracking-title">What happens next?</h4>
+                  <div className="tracking-steps">
+                    <div className="tracking-step">
+                      <div className="step-number">1</div>
+                      <div className="step-text">We'll prepare your order for delivery</div>
                     </div>
-                    <div className="cod-amount">
-                      <span className="cod-amount-label">Amount to pay:</span>
-                      <span className="cod-amount-value">₹{orderData.total}</span>
+                    <div className="tracking-step">
+                      <div className="step-number">2</div>
+                      <div className="step-text">You'll receive delivery updates via SMS/Email</div>
                     </div>
-                  </div>
-                  
-                  {/* Order tracking info */}
-                  <div className="order-tracking-info">
-                    <h4 className="tracking-title">What happens next?</h4>
-                    <div className="tracking-steps">
-                      <div className="tracking-step">
-                        <div className="step-number">1</div>
-                        <div className="step-text">We'll prepare your order for delivery</div>
-                      </div>
-                      <div className="tracking-step">
-                        <div className="step-number">2</div>
-                        <div className="step-text">You'll receive delivery updates via SMS/Email</div>
-                      </div>
-                      <div className="tracking-step">
-                        <div className="step-number">3</div>
-                        <div className="step-text">Pay cash to the delivery person</div>
-                      </div>
+                    <div className="tracking-step">
+                      <div className="step-number">3</div>
+                      <div className="step-text">Pay cash to the delivery person</div>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </>
-          ) : (
+          ) : order.status === 'denied' ? (
             <>
               <div className="seller-message-section">
                 <div className="seller-message-card">
@@ -340,13 +247,11 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                   <div>
                     <h3 className="seller-title">Message from Seller</h3>
                     <div className="seller-message-box">
-                      <p>All Items not Available, Sorry!!</p>
+                      <p>{order.denialReason || 'All Items not Available, Sorry!!'}</p>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Navigation buttons for cancelled orders */}
               <div className="navigation-section">
                 <div className="navigation-buttons">
                   <button onClick={handleReturnHome} className="nav-button home-button">
@@ -355,12 +260,12 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
                   </button>
                   <button onClick={handleReturnToCart} className="nav-button cart-button-bottom">
                     <ShoppingCart className="nav-button-icon" />
-                    Return to Cart
+                    Return to Store
                   </button>
-                  </div>
+                </div>
               </div>
             </>
-          )}
+          ) : null}
         </div>
 
         {/* Right Column - Order Summary Sidebar */}
@@ -388,11 +293,7 @@ const OrderStatus: React.FC<OrderStatusProps> = ({ openCartSlider }) => {
               <div className="summary-row">
                 <span>Payment Method:</span>
                 <span className="payment-method-badge">
-                  {state.paymentMethod === 'online' ? (
-                    <><CreditCard className="payment-method-icon" /> Online</>
-                  ) : (
-                    <><Banknote className="payment-method-icon" /> COD</>
-                  )}
+                  <Banknote className="payment-method-icon" /> COD
                 </span>
               </div>
               <div className="summary-total">

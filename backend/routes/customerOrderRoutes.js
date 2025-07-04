@@ -1,10 +1,10 @@
 // routes/customerOrderRoutes.js
 const express = require('express');
 const router = express.Router();
-const { placeOrder } = require('../controllers/customerOrderController');
-const { protectCustomer } = require('../middleware/customerAuth');
+const { placeOrder, getOrderById } = require('../controllers/customerOrderController');
 
-router.post('/placeOrder', protectCustomer, placeOrder);
+router.post('/placeOrder', placeOrder);
+router.get('/:orderId', getOrderById);
 
 module.exports = router;
 

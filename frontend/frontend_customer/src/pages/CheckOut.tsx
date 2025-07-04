@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../context/CartContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import OurLogo from '../assets/images/Our-Logo.png';
 
 interface FormData {
@@ -14,6 +14,8 @@ interface FormData {
 interface CheckoutPageProps {
   openCartSlider: () => void;
 }
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7890';
 
 const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
   const { items: cartItems, addToCart, removeFromCart, getCartTotal } = useCart();
@@ -36,6 +38,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
 
   const navigate = useNavigate();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { sellerSlug } = useParams<{ sellerSlug: string }>();
 
   const subtotal = getCartTotal();
   const shipping = 0;
@@ -149,14 +152,32 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
     }
 
     setIsVerifying(true);
-    
-    // Simulate verification delay
-    setTimeout(() => {
+
+    setTimeout(async () => {
       if (enteredOtp === generatedOtp) {
         setIsVerifying(false);
         setShowOtpModal(false);
-        console.log('Order placed:', { formData, paymentMethod, cartItems });
-        navigate('/order-status', { state: { formData, paymentMethod, cartItems, total } });
+        try {
+          const res = await fetch(`${API_BASE}/api/orders/customer/placeOrder`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sellerSlug,
+              products: cartItems.map(item => ({
+                productId: item.product.id,
+                quantity: item.quantity
+              })),
+              customerName: formData.firstName + ' ' + formData.lastName,
+              customerPhone: formData.phoneNumber,
+              customerAddress: formData.streetAddress + ', ' + formData.townCity
+            })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Order failed');
+          navigate(`/store/${sellerSlug}/order-status/${data.orderId}`);
+        } catch (err: any) {
+          alert('Order failed: ' + (err.message || err));
+        }
       } else {
         setIsVerifying(false);
         alert('Invalid OTP. Please try again.');

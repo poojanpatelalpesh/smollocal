@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { CheckCircle, XCircle, X, AlertTriangle, Info } from 'lucide-react';
 import './Notification.css';

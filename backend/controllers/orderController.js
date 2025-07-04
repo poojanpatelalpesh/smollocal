@@ -4,7 +4,10 @@ const Product = require('../models/Products');
 
 exports.getOrdersForSeller = async (req, res) => {
   try {
-    const orders = await Order.find({ seller: req.seller._id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ seller: req.seller._id })
+    .populate('customer')
+    .populate('products.productId')
+    .sort({ createdAt: -1 });
 
     // For each order, check if transaction exists
     const orderIds = orders.map(o => o._id);
@@ -12,7 +15,9 @@ exports.getOrdersForSeller = async (req, res) => {
 
     const maskedOrders = orders.map(order => {
       const transactionExists = transactions.some(t => t.order.toString() === order._id.toString());
-      const customerData = { ...order.customer.toObject() };
+      const customerData = order.customer && typeof order.customer.toObject === 'function'
+  ? { ...order.customer.toObject() }
+  : {};
 
       // Show phone only if order paid AND transaction exists (payment done)
       if (!(order.status === 'paid' && transactionExists)) {
@@ -24,7 +29,8 @@ exports.getOrdersForSeller = async (req, res) => {
 
     res.json(maskedOrders);
   } catch (error) {
-    res.status(500).json({ message: 'Could not fetch orders' });
+    console.error('getOrdersForSeller error:', error);
+    res.status(500).json({ message: 'Could not fetch orders', error: error.message });
   }
 };
 
@@ -50,7 +56,7 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-const Seller = require('../models/seller');
+const Seller = require('../models/Seller');
 
 exports.placeOrder = async (req, res) => {
   const { sellerBusinessName, products } = req.body;
@@ -88,5 +94,3 @@ exports.placeOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to place order' });
   }
 };
-
-

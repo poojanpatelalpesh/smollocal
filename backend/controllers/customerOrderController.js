@@ -3,17 +3,14 @@ const Product = require('../models/Products');
 const Seller = require('../models/Seller');
 
 exports.placeOrder = async (req, res) => {
-  const { sellerBusinessName, products } = req.body;
-  const customerId = req.customer; // Already from middleware
-
-  if (!customerId) return res.status(401).json({ message: 'Unauthorized, login first' });
+  const { sellerSlug, products, customerName, customerPhone, customerAddress } = req.body;
 
   try {
-    if (!sellerBusinessName) {
-      return res.status(400).json({ message: 'sellerBusinessName is required' });
+    if (!sellerSlug) {
+      return res.status(400).json({ message: 'sellerSlug is required' });
     }
 
-    const seller = await Seller.findOne({ businessName: sellerBusinessName.toLowerCase() });
+    const seller = await Seller.findOne({ slug: sellerSlug });
     if (!seller) return res.status(404).json({ message: 'Seller not found' });
 
     const productIds = products.map(p => p.productId);
@@ -26,8 +23,10 @@ exports.placeOrder = async (req, res) => {
       seller: seller._id,
       sellerName: seller.businessName,
       products,
-      customer: customerId, // This is an ObjectId
       status: 'pending',
+      customerName,
+      customerPhone,
+      customerAddress,
     });
 
     await order.save();
@@ -35,5 +34,16 @@ exports.placeOrder = async (req, res) => {
   } catch (error) {
     console.error('Place order error:', error);
     res.status(500).json({ message: 'Failed to place order' });
+  }
+};
+
+exports.getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId).populate('products.productId');
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch order', error: error.message });
   }
 };

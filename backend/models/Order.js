@@ -15,8 +15,11 @@ const orderSchema = new mongoose.Schema({
   customer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer',
-    required: true,
+    required: false,
   },
+  customerName: { type: String },
+  customerPhone: { type: String },
+  customerAddress: { type: String },
   status: {
     type: String,
     enum: ['pending', 'approved', 'denied','paid'],
