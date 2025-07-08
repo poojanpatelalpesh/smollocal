@@ -25,26 +25,7 @@ const Dashboard: React.FC = () => {
       try {
         const ordersData = await ordersAPI.getAll(token);
         if (isMounted) {
-          setOrders(prevOrders => {
-            // Always return a new array to force re-render
-            if (JSON.stringify(prevOrders.map(o => o._id)) !== JSON.stringify(ordersData.map(o => o._id))) {
-              console.log('Orders updated:', ordersData);
-              // ...toast logic here...
-              const prevIds = prevOrderIds.current;
-              const newOrderIds = new Set(ordersData.map(o => o._id));
-              const trulyNewOrders = ordersData.filter(o => !prevIds.has(o._id));
-              if (trulyNewOrders.length > 0) {
-                trulyNewOrders.forEach(order => {
-                  setToastMessage(`New order from ${order.customer?.name || order.customerName || 'Customer'}!`);
-                  setShowToast(true);
-                  setTimeout(() => setShowToast(false), 3000);
-                });
-              }
-              prevOrderIds.current = newOrderIds;
-              return [...ordersData];
-            }
-            return prevOrders;
-          });
+          setOrders([...ordersData]); // Always set new array to force re-render
           if (loading) setLoading(false);
         }
       } catch (err) {

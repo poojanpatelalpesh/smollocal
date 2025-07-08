@@ -7,7 +7,7 @@ interface OrderCardProps {
   order: Order;
   onAccept: (id: string) => void;
   onCancel: (id: string) => void;
-  onSendMessage: (id: string, message: string) => void;
+  onSendMessage?: (id: string, message: string) => void;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ 
@@ -28,7 +28,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      onSendMessage(order._id, message);
+      onSendMessage && onSendMessage(order._id, message);
       setMessage('');
     }
   };
@@ -95,23 +95,25 @@ const OrderCard: React.FC<OrderCardProps> = ({
             </div>
           )}
 
-          <div className="message-box">
-            <h4>Message Customer</h4>
-            <textarea
-              className="message-input"
-              placeholder="Type your message here..."
-              rows={4}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button
-              className="message-send"
-              style={{ backgroundColor: '#4F46E5' }}
-              onClick={handleSendMessage}
-            >
-              Send Message
-            </button>
-          </div>
+          {onSendMessage && (
+            <div className="message-box">
+              <h4>Message Customer</h4>
+              <textarea
+                className="message-input"
+                placeholder="Type your message here..."
+                rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                className="message-send"
+                style={{ backgroundColor: '#4F46E5' }}
+                onClick={handleSendMessage}
+              >
+                Send Message
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

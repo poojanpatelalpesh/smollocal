@@ -6,7 +6,8 @@ const customerSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   phone: { type: String, required: true },
   password: { type: String, required: true },
-  address: { type: String, default: '' }
+  address: { type: String, default: '' },
+  seller: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true }
 }, { timestamps: true });
 
 // Hash password before save

@@ -27,7 +27,6 @@ const CustomerLayout: React.FC = () => {
         <CartModal isOpen={isCartOpen} onClose={closeCartSlider} />
         <Header darkMode={darkMode} setDarkMode={setDarkMode} openCartSlider={openCartSlider} />
         <main><Outlet /></main>
-        <Footer />
       </div>
     </CartProvider>
   );

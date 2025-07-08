@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './MessageAll.css';
+import { useAuth } from '../context/AuthContext';
+import { customersAPI } from '../services/api';
 
-interface MessageAllProps {
-  totalCustomers?: number; // optional prop for total customers count
-}
-
-const MessageAll: React.FC<MessageAllProps> = ({ totalCustomers = 0 }) => {
+const MessageAll: React.FC = () => {
   const [message, setMessage] = useState<string>('');
+  const [customerCount, setCustomerCount] = useState<number>(0);
+  const { token } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      if (!token) return;
+      try {
+        const count = await customersAPI.getCount(token);
+        setCustomerCount(count);
+      } catch (err) {
+        setCustomerCount(0);
+      }
+    };
+    fetchCount();
+  }, [token]);
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
@@ -89,7 +102,7 @@ const MessageAll: React.FC<MessageAllProps> = ({ totalCustomers = 0 }) => {
             <div className="preview-header">
               <h3>MESSAGE PREVIEW</h3>
               <div className="recipient-info">
-                <span>📱 {totalCustomers.toLocaleString()} recipients</span>
+                <span>📱 {customerCount.toLocaleString()} recipients</span>
               </div>
             </div>
             <div className="preview-content">

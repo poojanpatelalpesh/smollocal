@@ -18,7 +18,7 @@ interface CheckoutPageProps {
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7890';
 
 const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
-  const { items: cartItems, addToCart, removeFromCart, getCartTotal } = useCart();
+  const { items: cartItems, addToCart, removeFromCart, getCartTotal, clearCart } = useCart();
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -175,6 +175,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
           const data = await res.json();
           if (!res.ok) throw new Error(data.message || 'Order failed');
           navigate(`/store/${sellerSlug}/order-status/${data.orderId}`);
+          clearCart();
         } catch (err: any) {
           alert('Order failed: ' + (err.message || err));
         }
@@ -206,28 +207,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
 
   return (
     <div className="checkout-page">
-      <div className="header">
-        <div className="container header-content">
-          <div className="logo">
-            <img src={OurLogo} alt="Our Logo" className="logo-image" />
-          </div>
-          <div className="breadcrumb">
-            <Link to="/">Product</Link> /{' '}
-            <button
-              type="button"
-              onClick={() => {
-                console.log('View Cart clicked');
-                openCartSlider();
-              }}
-              className="breadcrumb-button"
-            >
-              View Cart
-            </button>{' '}
-            / <span className="active">CheckOut</span>
-          </div>
-        </div>
-      </div>
-
       <div className="container checkout-content">
         <div className="checkout-box">
           {/* Billing Details */}

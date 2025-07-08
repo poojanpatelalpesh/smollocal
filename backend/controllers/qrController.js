@@ -1,5 +1,5 @@
 const QRCode = require('qrcode');
-const Seller = require('../models/seller');
+const Seller = require('../models/Seller');
 
 exports.generateQR = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ exports.generateQR = async (req, res) => {
       return res.status(404).json({ message: 'Seller or slug not found' });
     }
 
-    const storeUrl = `https://yourdomain.com/store/${seller.slug}`;
+    const storeUrl = `http://localhost:5173/store/bakery`;
     const qrImage = await QRCode.toDataURL(storeUrl);
 
     res.json({ qrImage, storeUrl });

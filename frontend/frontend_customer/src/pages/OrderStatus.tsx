@@ -7,6 +7,16 @@ import '../styles/orderstatus.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
+// Add type for orderData.items
+interface OrderItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 const OrderStatus: React.FC = () => {
   const { sellerSlug, orderId } = useParams<{ sellerSlug: string; orderId: string }>();
   const navigate = useNavigate();
@@ -171,7 +181,7 @@ const OrderStatus: React.FC = () => {
               Order Items
             </h3>
             <div className="order-items">
-              {orderData.items.map((item) => (
+              {orderData.items.map((item: OrderItem) => (
                 <div key={item.id} className="order-item">
                   <div className="item-image">
                     {item.image ? (
@@ -209,7 +219,6 @@ const OrderStatus: React.FC = () => {
                       </p>
                       <div className="cod-delivery-info">
                         <Truck className="cod-delivery-icon" />
-                        <span>Estimated delivery: {orderData.estimatedDelivery}</span>
                       </div>
                     </div>
                   </div>

@@ -9,15 +9,16 @@ const generateToken = (id) => {
 // Register customer
 exports.registerCustomer = async (req, res) => {
   const { name, email, phone, password, address } = req.body;
+  const sellerId = req.seller?._id;
 
-  if (!name || !email || !phone || !password) {
-    return res.status(400).json({ message: 'All fields required' });
+  if (!name || !email || !phone || !password || !sellerId) {
+    return res.status(400).json({ message: 'All fields required, including seller' });
   }
 
   try {
-    const existingCustomer = await Customer.findOne({ email: email.toLowerCase() });
+    const existingCustomer = await Customer.findOne({ email: email.toLowerCase(), seller: sellerId });
     if (existingCustomer) {
-      return res.status(400).json({ message: 'Email already registered' });
+      return res.status(400).json({ message: 'Email already registered for this seller' });
     }
 
     const customer = await Customer.create({
@@ -25,7 +26,8 @@ exports.registerCustomer = async (req, res) => {
       email: email.toLowerCase(),
       phone,
       password,
-      address: address || ''
+      address: address || '',
+      seller: sellerId
     });
 
     res.status(201).json({
@@ -37,6 +39,7 @@ exports.registerCustomer = async (req, res) => {
         email: customer.email,
         phone: customer.phone,
         address: customer.address,
+        seller: customer.seller
       }
     });
   } catch (error) {
@@ -69,6 +72,18 @@ exports.loginCustomer = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get total customer count
+exports.getCustomerCount = async (req, res) => {
+  try {
+    const sellerId = req.seller?._id;
+    if (!sellerId) return res.status(401).json({ message: 'Unauthorized' });
+    const count = await Customer.countDocuments({ seller: sellerId });
+    res.json({ count });
+  } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };

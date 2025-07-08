@@ -50,13 +50,24 @@ const OrderHistory: React.FC = () => {
 
   // Filter orders based on search term and status filter
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = searchTerm === '' || 
-      order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.phone.includes(searchTerm);
-    
+    const lowerSearch = searchTerm.toLowerCase();
+    // Customer details
+    const customerName = order.customer?.name || order.customerName || '';
+    const customerEmail = order.customer?.email || '';
+    const customerPhone = order.customer?.phone || order.customerPhone || '';
+    const customerAddress = order.customer?.address || order.customerAddress || '';
+    // Product names
+    const productNames = order.products
+      .map(p => typeof p.productId === 'object' && p.productId ? p.productId.name : '')
+      .join(' ');
+    const matchesSearch =
+      lowerSearch === '' ||
+      customerName.toLowerCase().includes(lowerSearch) ||
+      customerEmail.toLowerCase().includes(lowerSearch) ||
+      customerPhone.toLowerCase().includes(lowerSearch) ||
+      customerAddress.toLowerCase().includes(lowerSearch) ||
+      productNames.toLowerCase().includes(lowerSearch);
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
-    
     return matchesSearch && matchesStatus;
   });
 
@@ -139,7 +150,6 @@ const OrderHistory: React.FC = () => {
           orders={filteredOrders}
           onAcceptOrder={() => {}}  // No-op in history view
           onCancelOrder={() => {}}  // No-op in history view
-          onSendMessage={handleSendMessage}
         />
       )}
     </div>

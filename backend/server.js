@@ -14,6 +14,7 @@ const customerOrderRoutes = require('./routes/customerOrderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const qrRoutes = require('./routes/qrRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 
 
 const app = express();
@@ -46,6 +47,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/qr', qrRoutes);
+app.use('/api/customers', customerRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

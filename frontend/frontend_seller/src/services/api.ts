@@ -317,6 +317,23 @@ export const qrAPI = {
   },
 };
 
+// Customers API
+export const customersAPI = {
+  getCount: async (token: string): Promise<number> => {
+    const response = await fetch(`${API_BASE_URL}/customers/count`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch customer count');
+    }
+    const data = await response.json();
+    return data.count;
+  },
+};
+
 // Utility functions
 export const getAuthToken = (): string | null => {
   return localStorage.getItem('sellerToken');

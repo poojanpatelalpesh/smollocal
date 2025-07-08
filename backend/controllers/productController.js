@@ -117,8 +117,14 @@ exports.getProductsBySellerSlug = async (req, res) => {
     if (!seller) {
       return res.status(404).json({ error: 'Seller not found' });
     }
-    const products = await Product.find({ seller: seller._id });
-    res.json(products);
+    // Populate category name
+    const products = await Product.find({ seller: seller._id }).populate('category', 'name');
+    // Map to include category name directly
+    const mapped = products.map(p => ({
+      ...p.toObject(),
+      category: p.category && p.category.name ? p.category.name : 'Uncategorized',
+    }));
+    res.json(mapped);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

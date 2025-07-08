@@ -13,6 +13,9 @@ import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SingupPage';
 import FirstPage from './pages/FirstPage';
 import Price from './pages/Price';
+import Notification from './components/Notification';
+import { ordersAPI } from './services/api';
+import OrderNotificationProvider from './OrderNotificationProvider';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -94,7 +97,7 @@ function AppRoutes() {
       <Route path="/MessageAll" element={
         <ProtectedRoute>
           <Layout>
-            <MessageAll totalCustomers={1000} />
+            <MessageAll />
           </Layout>
         </ProtectedRoute>
       } />
@@ -113,7 +116,9 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+        <OrderNotificationProvider>
+          <AppRoutes />
+        </OrderNotificationProvider>
       </AuthProvider>
     </Router>
   );

@@ -8,7 +8,7 @@ interface OrderListProps {
   orders: Order[];
   onAcceptOrder: (id: string) => void;
   onCancelOrder: (id: string) => void;
-  onSendMessage: (id: string, message: string) => void;
+  onSendMessage?: (id: string, message: string) => void;
 }
 
 const OrderList: React.FC<OrderListProps> = ({ 
@@ -33,7 +33,7 @@ const OrderList: React.FC<OrderListProps> = ({
           order={order}
           onAccept={onAcceptOrder}
           onCancel={onCancelOrder}
-          onSendMessage={onSendMessage}
+          {...(onSendMessage ? { onSendMessage } : {})}
         />
       ))}
     </div>
