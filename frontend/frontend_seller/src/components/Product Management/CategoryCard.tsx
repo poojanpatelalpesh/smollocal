@@ -7,7 +7,7 @@ interface CategoryCardProps {
   category: Category;
   productCount: number;
   onEdit: (category: Category) => void;
-  onDelete: (categoryId: string) => void;
+  onDelete: (category: Category) => void;
   onSelect: (category: Category) => void;
 }
 
@@ -45,7 +45,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(category._id);
+                onDelete(category);
               }}
               className="category-card-action-btn delete"
               title="Delete category"
