@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { ordersAPI, Order } from '../services/api';
 import './Dashboard.css';
 import Notification from '../components/Notification';
+import CancelOrderModal from '../components/CancelOrderModal';
 
 const Dashboard: React.FC = () => {
   const { token } = useAuth();
@@ -16,6 +17,8 @@ const Dashboard: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const prevOrderIds = React.useRef<Set<string>>(new Set());
+  const [cancelModal, setCancelModal] = useState<{ open: boolean; orderId: string | null }>({ open: false, orderId: null });
+  const [isCancelling, setIsCancelling] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -71,20 +74,22 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleCancelOrder = async (id: string) => {
-    if (!token) return;
-    
-    const reason = prompt('Please provide a reason for cancellation:');
-    if (reason === null) return; // User cancelled
-    
+  const handleCancelOrder = (id: string) => {
+    setCancelModal({ open: true, orderId: id });
+  };
+
+  const handleCancelConfirm = async (reason: string) => {
+    if (!token || !cancelModal.orderId) return;
+    setIsCancelling(true);
     try {
-      const updatedOrder = await ordersAPI.updateStatus(token, id, 'denied', reason);
-      setOrders(orders.map(order => 
-        order._id === id ? updatedOrder : order
-      ));
+      const updatedOrder = await ordersAPI.updateStatus(token, cancelModal.orderId, 'denied', reason);
+      setOrders(orders.map(order => order._id === cancelModal.orderId ? updatedOrder : order));
+      setCancelModal({ open: false, orderId: null });
     } catch (error) {
       console.error('Error canceling order:', error);
       alert('Failed to cancel order');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -183,6 +188,12 @@ const Dashboard: React.FC = () => {
           onSendMessage={handleSendMessage}
         />
       )}
+      <CancelOrderModal
+        isOpen={cancelModal.open}
+        onClose={() => setCancelModal({ open: false, orderId: null })}
+        onConfirm={handleCancelConfirm}
+        isLoading={isCancelling}
+      />
 
       {showToast && (
         <Notification
