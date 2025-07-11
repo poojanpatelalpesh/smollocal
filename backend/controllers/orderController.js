@@ -1,6 +1,8 @@
 const Order = require('../models/Order');
 const Transaction = require('../models/Transaction');
 const Product = require('../models/Products');
+const Seller = require('../models/seller');
+const SellerCustomer = require('../models/SellerCustomer');
 
 exports.getOrdersForSeller = async (req, res) => {
   try {
@@ -49,6 +51,15 @@ exports.updateOrderStatus = async (req, res) => {
       order.denialReason = denialReason || 'No reason provided';
     }
 
+    // If order is approved, upsert customer into SellerCustomer
+    if (status === 'approved' && order.customerName && order.customerPhone) {
+      await SellerCustomer.findOneAndUpdate(
+        { phone: order.customerPhone, seller: order.seller },
+        { name: order.customerName, phone: order.customerPhone, seller: order.seller },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+    }
+
     await order.save();
     res.json(order);
   } catch (error) {
@@ -56,7 +67,6 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-const Seller = require('../models/Seller');
 
 exports.placeOrder = async (req, res) => {
   const { sellerBusinessName, products } = req.body;

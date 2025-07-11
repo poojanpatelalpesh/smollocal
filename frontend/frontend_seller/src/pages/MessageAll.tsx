@@ -3,11 +3,12 @@ import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './MessageAll.css';
 import { useAuth } from '../context/AuthContext';
-import { customersAPI } from '../services/api';
+import { customersAPI, sendMessageAPI } from '../services/api';
 
 const MessageAll: React.FC = () => {
   const [message, setMessage] = useState<string>('');
   const [customerCount, setCustomerCount] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
   const { token } = useAuth();
   const navigate = useNavigate();
 
@@ -33,10 +34,17 @@ const MessageAll: React.FC = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      alert(`Message sent to all customers!`);
+  const handleSendMessage = async () => {
+    if (!message.trim() || !token) return;
+    setLoading(true);
+    try {
+      await sendMessageAPI.sendToAll(token, message);
+      alert('Message sent to all customers!');
       setMessage('');
+    } catch (err: any) {
+      alert(err.message || 'Failed to send message');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,11 +94,11 @@ const MessageAll: React.FC = () => {
               </div>
 
               <div className="send-options">
-                <button className="send-button" onClick={handleSendMessage}>
+                <button className="send-button" onClick={handleSendMessage} disabled={loading || !message.trim()}>
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                   </svg>
-                  SEND NOW
+                  {loading ? 'SENDING...' : 'SEND NOW'}
                 </button>
               </div>
             </div>

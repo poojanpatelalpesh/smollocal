@@ -10,6 +10,11 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: 'sellerSlug is required' });
     }
 
+    // Prevent empty orders
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ message: 'Order must contain at least one product.' });
+    }
+
     const seller = await Seller.findOne({ slug: sellerSlug });
     if (!seller) return res.status(404).json({ message: 'Seller not found' });
 
@@ -17,6 +22,18 @@ exports.placeOrder = async (req, res) => {
     const sellerProducts = await Product.find({ _id: { $in: productIds }, seller: seller._id });
     if (sellerProducts.length !== products.length) {
       return res.status(400).json({ message: 'One or more products not found for this seller' });
+    }
+
+    // Prevent zero-value orders
+    let total = 0;
+    for (const item of products) {
+      const prod = sellerProducts.find(p => p._id.toString() === item.productId.toString());
+      if (prod) {
+        total += prod.price * (item.quantity || 1);
+      }
+    }
+    if (total <= 0) {
+      return res.status(400).json({ message: 'Order total must be greater than zero.' });
     }
 
     const order = new Order({

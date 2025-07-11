@@ -320,7 +320,7 @@ export const qrAPI = {
 // Customers API
 export const customersAPI = {
   getCount: async (token: string): Promise<number> => {
-    const response = await fetch(`${API_BASE_URL}/customers/count`, {
+    const response = await fetch(`${API_BASE_URL}/addCustomer/count`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -331,6 +331,89 @@ export const customersAPI = {
     }
     const data = await response.json();
     return data.count;
+  },
+
+  // Fetch all customers for the seller
+  getAll: async (token: string): Promise<Customer[]> => {
+    const response = await fetch(`${API_BASE_URL}/addCustomer`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to fetch customers');
+    }
+    return response.json();
+  },
+
+  // Add a new customer
+  add: async (token: string, name: string, phone: string): Promise<Customer> => {
+    const response = await fetch(`${API_BASE_URL}/addCustomer`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, phone }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to add customer');
+    }
+    return response.json();
+  },
+
+  // Update a customer
+  update: async (token: string, id: string, name: string, phone: string): Promise<Customer> => {
+    const response = await fetch(`${API_BASE_URL}/addCustomer/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, phone }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update customer');
+    }
+    return response.json();
+  },
+
+  // Delete a customer
+  delete: async (token: string, id: string): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/addCustomer/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to delete customer');
+    }
+  },
+};
+
+// Send Message API
+export const sendMessageAPI = {
+  sendToAll: async (token: string, message: string): Promise<{ message: string }> => {
+    const response = await fetch(`${API_BASE_URL}/sendmessage/send-message`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to send message');
+    }
+    return response.json();
   },
 };
 

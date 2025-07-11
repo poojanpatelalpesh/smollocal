@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../context/CartContext';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import OurLogo from '../assets/images/Our-Logo.png';
+import Notification from '../components/Notification';
 
 interface FormData {
   firstName: string;
@@ -28,13 +29,13 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
     phoneNumber: '',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cod'>('online');
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '']);
   const [generatedOtp, setGeneratedOtp] = useState('');
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [toast, setToast] = useState<{ open: boolean; type: 'success' | 'error' | 'warning' | 'info'; title: string; message?: string }>({ open: false, type: 'info', title: '', message: '' });
 
   const navigate = useNavigate();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -89,13 +90,13 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
     const requiredFields = ['firstName', 'lastName', 'streetAddress', 'townCity', 'phoneNumber'];
     for (const field of requiredFields) {
       if (!formData[field as keyof FormData]) {
-        alert('Please fill all required fields marked with *');
+        setToast({ open: true, type: 'warning', title: 'Missing Fields', message: 'Please fill all required fields marked with *' });
         return;
       }
     }
 
-    if (!/^\d{10}$/.test(formData.phoneNumber)) {
-      alert('Please enter a valid 10-digit phone number');
+    if (!/^[0-9]{10}$/.test(formData.phoneNumber)) {
+      setToast({ open: true, type: 'warning', title: 'Invalid Phone', message: 'Please enter a valid 10-digit phone number' });
       return;
     }
 
@@ -147,7 +148,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
   const handleVerifyOtp = () => {
     const enteredOtp = otp.join('');
     if (enteredOtp.length !== 4) {
-      alert('Please enter complete 4-digit OTP');
+      setToast({ open: true, type: 'warning', title: 'Incomplete OTP', message: 'Please enter complete 4-digit OTP' });
       return;
     }
 
@@ -177,11 +178,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
           navigate(`/store/${sellerSlug}/order-status/${data.orderId}`);
           clearCart();
         } catch (err: any) {
-          alert('Order failed: ' + (err.message || err));
+          setToast({ open: true, type: 'error', title: 'Order Failed', message: err.message || 'Order failed' });
         }
       } else {
         setIsVerifying(false);
-        alert('Invalid OTP. Please try again.');
+        setToast({ open: true, type: 'error', title: 'Invalid OTP', message: 'Invalid OTP. Please try again.' });
         setOtp(['', '', '', '']);
         otpRefs.current[0]?.focus();
       }
@@ -195,7 +196,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
       setCanResend(false);
       setOtp(['', '', '', '']);
       otpRefs.current[0]?.focus();
-      alert('New OTP sent to your phone number');
+      setToast({ open: true, type: 'info', title: 'OTP Sent', message: 'New OTP sent to your phone number' });
     }
   };
 
@@ -207,6 +208,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
 
   return (
     <div className="checkout-page">
+      <Notification
+        isOpen={toast.open}
+        onClose={() => setToast(t => ({ ...t, open: false }))}
+        type={toast.type}
+        title={toast.title}
+        message={toast.message}
+        duration={4000}
+      />
       <div className="container checkout-content">
         <div className="checkout-box">
           {/* Billing Details */}
@@ -333,24 +342,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ openCartSlider }) => {
                   <div>
                     <input
                       type="radio"
-                      id="payOnline"
-                      name="payment"
-                      value="online"
-                      checked={paymentMethod === 'online'}
-                      onChange={e => setPaymentMethod(e.target.value as 'online' | 'cod')}
-                    />
-                    <label htmlFor="payOnline">Pay Online</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
                       id="cashOnDelivery"
                       name="payment"
                       value="cod"
-                      checked={paymentMethod === 'cod'}
-                      onChange={e => setPaymentMethod(e.target.value as 'online' | 'cod')}
+                      checked={true}
+                      readOnly
+                      disabled
                     />
-                    <label htmlFor="cashOnDelivery">Cash On Delivery</label>
+                    <label htmlFor="cashOnDelivery">Cash On Delivery (COD)</label>
                   </div>
                 </div>
               </div>

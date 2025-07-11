@@ -108,3 +108,16 @@ exports.deleteCustomer = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete customer.' });
   }
 };
+
+// @desc    Get total customer count for seller
+// @route   GET /api/addCustomer/count
+// @access  Private (seller)
+exports.getCustomerCount = async (req, res) => {
+  try {
+    const sellerId = req.seller._id;
+    const count = await SellerCustomer.countDocuments({ seller: sellerId });
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch customer count.' });
+  }
+};

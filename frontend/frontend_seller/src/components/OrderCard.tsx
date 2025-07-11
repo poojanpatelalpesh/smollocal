@@ -95,7 +95,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             </div>
           )}
 
-          {onSendMessage && (
+          {onSendMessage && order.status === 'pending' && (
             <div className="message-box">
               <h4>Message Customer</h4>
               <textarea

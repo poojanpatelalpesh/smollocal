@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '../components/ConfirmModal';
 import Notification from '../components/Notification';
 import './CustomerPage.css';
+import { useAuth } from '../context/AuthContext';
+import { customersAPI } from '../services/api';
 
 interface Customer {
-  id: number;
+  _id: string;
   name: string;
   phone: string;
 }
@@ -17,8 +19,8 @@ const CustomerPage: React.FC = () => {
     name: '',
     phone: '',
   });
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; customerId: number | null; customerName: string }>({
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; customerId: string | null; customerName: string }>({
     isOpen: false,
     customerId: null,
     customerName: ''
@@ -34,8 +36,15 @@ const CustomerPage: React.FC = () => {
     title: '',
     message: ''
   });
-
+  const { token } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!token) return;
+    customersAPI.getAll(token)
+      .then(setCustomers)
+      .catch(() => setCustomers([]));
+  }, [token]);
 
   const showNotification = (type: 'success' | 'error' | 'warning' | 'info', title: string, message?: string) => {
     setNotification({
@@ -54,44 +63,41 @@ const CustomerPage: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const trimmedName = formData.name.trim();
     const trimmedPhone = formData.phone.trim();
-
     if (!trimmedName || !trimmedPhone) {
       showNotification('warning', 'Validation Error', 'Please fill in all fields');
       return;
     }
-
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(trimmedPhone)) {
       showNotification('warning', 'Invalid Phone Number', 'Phone number must be exactly 10 digits');
       return;
     }
-
     if (editingId) {
-      setCustomers(prev =>
-        prev.map(customer =>
-          customer.id === editingId
-            ? { ...customer, name: trimmedName, phone: trimmedPhone }
-            : customer
-        )
-      );
-      setEditingId(null);
-      showNotification('success', 'Customer Updated', `${trimmedName} has been updated successfully!`);
-    } else {
-      const newCustomer: Customer = {
-        id: Date.now(),
-        name: trimmedName,
-        phone: trimmedPhone
-      };
+      if (!token) return;
+      try {
+        const updatedCustomer = await customersAPI.update(token, editingId, trimmedName, trimmedPhone);
+        setCustomers(prev => prev.map(c => c._id === editingId ? updatedCustomer : c));
+        showNotification('success', 'Customer Updated', `${trimmedName} has been updated successfully!`);
+        setEditingId(null);
+        setFormData({ name: '', phone: '' });
+      } catch (err: any) {
+        showNotification('error', 'Update Failed', err.message || 'Failed to update customer');
+      }
+      return;
+    }
+    if (!token) return;
+    try {
+      const newCustomer = await customersAPI.add(token, trimmedName, trimmedPhone);
       setCustomers(prev => [...prev, newCustomer]);
       showNotification('success', 'Customer Added', `${trimmedName} has been added successfully!`);
+      setFormData({ name: '', phone: '' });
+    } catch (err: any) {
+      showNotification('error', 'Add Failed', err.message || 'Failed to add customer');
     }
-
-    setFormData({ name: '', phone: '' });
   };
 
   const handleEdit = (customer: Customer) => {
@@ -99,19 +105,25 @@ const CustomerPage: React.FC = () => {
       name: customer.name,
       phone: customer.phone
     });
-    setEditingId(customer.id);
+    setEditingId(customer._id);
   };
 
-  const handleDelete = (id: number) => {
-    setCustomers(prev => prev.filter(customer => customer.id !== id));
-    setDeleteModal({ isOpen: false, customerId: null, customerName: '' });
-    showNotification('success', 'Customer Deleted', 'Customer has been deleted successfully!');
+  const handleDelete = async (id: string) => {
+    if (!token) return;
+    try {
+      await customersAPI.delete(token, id);
+      setCustomers(prev => prev.filter(customer => customer._id !== id));
+      setDeleteModal({ isOpen: false, customerId: null, customerName: '' });
+      showNotification('success', 'Customer Deleted', 'Customer has been deleted successfully!');
+    } catch (err: any) {
+      showNotification('error', 'Delete Failed', err.message || 'Failed to delete customer');
+    }
   };
 
   const openDeleteModal = (customer: Customer) => {
     setDeleteModal({
       isOpen: true,
-      customerId: customer.id,
+      customerId: customer._id,
       customerName: customer.name
     });
   };
@@ -202,7 +214,7 @@ const CustomerPage: React.FC = () => {
               </div>
             ) : (
               customers.map((customer) => (
-                <div key={customer.id} className="customer-card">
+                <div key={customer._id} className="customer-card">
                   <div className="customer-info">
                     <div className="customer-name">
                       <User className="customer-icon" />
