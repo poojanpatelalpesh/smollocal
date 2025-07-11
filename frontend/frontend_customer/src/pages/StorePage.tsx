@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ProductGrid from '../components/ProductGrid';
 import { Product } from '../types/index';
 
@@ -9,7 +9,7 @@ const StorePage: React.FC = () => {
   const { sellerSlug } = useParams<{ sellerSlug: string }>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!sellerSlug) return;
@@ -30,16 +30,15 @@ const StorePage: React.FC = () => {
           category: p.category || 'Uncategorized',
         }));
         setProducts(mapped);
-        setError(null);
       })
       .catch(err => {
-        setError(err.message || 'Error fetching products');
+        // Redirect to landing with a friendly error message
+        navigate('/', { state: { error: 'We couldn\'t find a store with that code or link. Please check and try again!' } });
       })
       .finally(() => setLoading(false));
-  }, [sellerSlug]);
+  }, [sellerSlug, navigate]);
 
   if (loading) return <div>Loading products...</div>;
-  if (error) return <div style={{color:'red'}}>Error: {error}</div>;
 
   return (
     <div>
